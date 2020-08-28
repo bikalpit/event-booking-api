@@ -19,5 +19,5 @@ class EtUsers extends Model
         'image'
     ];    
     
-    protected $hidden = [ ‘password’ ];
+    protected $hidden = [ 'password'];
 }

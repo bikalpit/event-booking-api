@@ -14,3 +14,15 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+	
+	//start admin login and signup routes
+		$router->post('signup',  ['uses' => 'UsersController@adminSignup']);
+		$router->post('login',  ['uses' => 'UsersController@isLogin']);
+        //$router->post('logout',  ['uses' => 'LogoutController@isLogout']);
+        $router->post('demo-test',  ['middleware'=>'auth','uses' => 'UsersController@logout']);
+	//end admin login and signup routes
+
+  		
+});
