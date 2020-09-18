@@ -15,8 +15,8 @@ class CreateEtApiTokenTable extends Migration
     {
         Schema::create('et_api_token', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('user_id');
-            $table->string('token');
+            $table->string('user_id',100);
+            $table->string('token',100);
             $table->enum('user_type', ['SA', 'A', 'EO', 'OM']);
             $table->timestamps();
         });

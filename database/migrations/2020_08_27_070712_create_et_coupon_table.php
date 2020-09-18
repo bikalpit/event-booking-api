@@ -16,6 +16,7 @@ class CreateEtCouponTable extends Migration
         Schema::create('et_coupon', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
+            $table->string('boxoffice_id',100);
             $table->string('coupon_title',100);
             $table->string('coupon_code',100);
             $table->date('valid_from');

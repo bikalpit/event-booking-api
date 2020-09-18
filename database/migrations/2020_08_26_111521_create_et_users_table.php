@@ -23,7 +23,7 @@ class CreateEtUsersTable extends Migration
             $table->string('phone',30);
             $table->enum('role', ['SA','EO','A','OM']);
             $table->enum('permission', ['A','EM','OM','OV']);
-            $table->string('sub_permission',100);
+            $table->string('sub_permission',100)->nullable();
             $table->enum('status', ['Y','N']);
             $table->enum('email_verify', ['Y','N']);
             $table->string('image',100);

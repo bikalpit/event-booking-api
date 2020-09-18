@@ -6,6 +6,7 @@ class EtCustomers extends Model
     protected $table = 'et_customers';
     protected $fillable = [
         'unique_code',
+				'boxoffice_id',
         'email',
         'phone',
         'firstname',

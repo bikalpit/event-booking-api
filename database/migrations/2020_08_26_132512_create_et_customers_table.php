@@ -16,6 +16,7 @@ class CreateEtCustomersTable extends Migration
         Schema::create('et_customers', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
+            $table->string('boxoffice_id',100);
             $table->string('email',100);
             $table->string('phone',30);
             $table->string('firstname',100);

@@ -19,7 +19,9 @@ class CorsMiddleware
             'Access-Control-Allow-Methods'     => 'POST, GET, OPTIONS, PUT, DELETE',
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Max-Age'           => '86400',
-            'Access-Control-Allow-Headers'     => 'Content-Type, Authorization, X-Requested-With'
+            'Access-Control-Allow-Headers'     => 'Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, admin-id, staff-id, customer-id, superadmin-id,api-token, authorization',
+           // 'Access-Control-Request-Headers'   => 'Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,admin-id,api-token,authorization',
+            'Access-Control-Request-Method'    => "POST, GET, OPTIONS, PUT, DELETE",     
         ];
 		
 		 if ($request->isMethod('OPTIONS'))

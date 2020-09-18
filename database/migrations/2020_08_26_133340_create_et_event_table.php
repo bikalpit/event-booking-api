@@ -16,7 +16,7 @@ class CreateEtEventTable extends Migration
         Schema::create('et_event', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
-            $table->integer('admin_id');
+            $table->string('boxoffice_id',100);
             $table->string('event_title',100);
             $table->date('start_date');
             $table->date('end_date');

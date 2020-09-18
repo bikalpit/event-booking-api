@@ -6,7 +6,7 @@ class EtSalesTax extends Model
     protected $table = 'et_sales_tax';
     protected $fillable = [
         'unique_code',
-        'admin_id',
+        'boxoffice_id',
         'name',
         'value'
     ];    

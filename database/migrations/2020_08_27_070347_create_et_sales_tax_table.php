@@ -16,7 +16,7 @@ class CreateEtSalesTaxTable extends Migration
         Schema::create('et_sales_tax', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
-            $table->bigInteger('admin_id');
+            $table->string('boxoffice_id',100);
             $table->string('name',100);
             $table->decimal('value', 8, 2);
             $table->timestamps();

@@ -16,7 +16,8 @@ class CreateEtSettingsTable extends Migration
         Schema::create('et_settings', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
-            $table->bigInteger('admin_id');
+            $table->string('boxoffice_id',100)->nullable();;
+            $table->bigInteger('admin_id')->nullable();;
             $table->string('option_key',100);
             $table->mediumText('option_value');
             $table->timestamps();

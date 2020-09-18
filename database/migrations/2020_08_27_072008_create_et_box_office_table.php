@@ -17,7 +17,7 @@ class CreateEtBoxOfficeTable extends Migration
             $table->id();
             $table->string('unique_code',100);
             $table->string('box_office_name',100);
-            $table->bigInteger('admin_id');
+            $table->string('admin_id',100);
             $table->string('language',50);
             $table->string('timezone',100);
             $table->string('box_office_link',50);

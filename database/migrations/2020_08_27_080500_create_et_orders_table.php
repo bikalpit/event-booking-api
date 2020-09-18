@@ -16,6 +16,7 @@ class CreateEtOrdersTable extends Migration
         Schema::create('et_orders', function (Blueprint $table) {
             $table->id();
             $table->string('unique_code',100);
+            $table->string('boxoffice_id',100);
             $table->bigInteger('event_id');
             $table->bigInteger('customer_id');
             $table->date('order_date');

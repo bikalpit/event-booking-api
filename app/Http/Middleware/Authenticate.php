@@ -38,7 +38,7 @@ class Authenticate extends Controller
     {
         if ($this->auth->guard($guard)->guest()) {
             //return response()->json(["statuscode" => 404, "response" => "api token or userid invaild"],404);
-						return $this->sendResponse("api token or userid invaild", 200, false);
+						return $this->sendResponse("TOKEN_EXPIRED", 200, false);
             //return response('Unauthorized.', 401);
         }
 
