@@ -6,23 +6,23 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ForgotEmail extends Mailable {
+class SendVerificationMail extends Mailable {
     use Queueable,
         SerializesModels;
     //build the message.
     public $data;
-    public $token;
     public $name;
+    public $verification_token;
     public function __construct($data)
     {
         $this->data = $data;
-        $this->token  = $this->data['token'];
-        $this->name   = $this->data['name'];
+        $this->name = $data['name'];
+        $this->verification_token = $data['verification_token'];
     }
     public function build()
     {
-        return $this->subject("Reset Password","Event Jio")
-                    ->view('forgot-email');
+        return $this->subject("E-mail Verification")
+                    ->view('send-verification-mail');
     }    
 }
 ?>

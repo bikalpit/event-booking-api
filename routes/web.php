@@ -18,40 +18,45 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
 	
 	$router->post('demo-test',  ['uses' => 'UsersController@demoTest']);
+
 	//start admin login and signup routes
-		$router->post('signup',  ['uses' => 'UsersController@adminSignup']);
-		$router->post('login',  ['uses' => 'UsersController@isLogin']);
-        //$router->post('logout',  ['uses' => 'LogoutController@isLogout']);
-		$router->post('addsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@Createsaletax']);
-		$router->post('deletesaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@SaleTaxDelete']);
-		$router->post('updatesaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@saleTaxUpdate']);
-		$router->post('getsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@get_saletax_data']);
-		$router->post('create-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@CreateBoxOffice']);
-		$router->post('get-single-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_single_boxoffice_data']);
-		$router->post('get-all-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_all_boxoffice_data']);
-		$router->post('update-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeUpdate']);
-		$router->post('delete-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeDelete']);
-		$router->post('create-event-api',  ['middleware'=>'auth','uses' => 'EventController@CreateEvent']);
-		$router->post('update-event-api',  ['uses' => 'EventController@EventUpdate']);
-		$router->post('get-single-event-api',  ['uses' => 'EventController@get_single_event_data']);
-		$router->post('get-allboxoffice-event-api',  ['uses' => 'EventController@get_all_boxoffice_event_data']);
-		$router->post('delete-event-api',  ['uses' => 'EventController@EventDelete']);
-		
-		
-		$router->get('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
-		$router->post('get-currancy-api',  ['uses' => 'SaleTaxController@get_all_currancy']);
-		
-		$router->post('create-customer-api',  ['uses' => 'CustomerController@Createcustomer']);
-		$router->post('get-single-customer-api',  ['uses' => 'CustomerController@get_single_customer_data']);
-		$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
-		$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
-		$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
+	$router->post('signup',  ['uses' => 'UsersController@adminSignup']);
+	$router->post('login',  ['uses' => 'UsersController@isLogin']);
+  //end admin login and signup routes
 
-    $router->post('forget-password',  ['uses' => 'ForgetPasswordController@sendForgotEmail']);
-    $router->post('reset-password',  ['uses' => 'ForgetPasswordController@resetPassword']);
-		
-		
-		//end admin login and signup routes
+  //$router->post('logout',  ['uses' => 'LogoutController@isLogout']);
+	$router->post('addsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@Createsaletax']);
+	$router->post('deletesaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@SaleTaxDelete']);
+	$router->post('updatesaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@saleTaxUpdate']);
+	$router->post('getsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@get_saletax_data']);
+	$router->post('create-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@CreateBoxOffice']);
+	$router->post('get-single-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_single_boxoffice_data']);
+	$router->post('get-all-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_all_boxoffice_data']);
+	$router->post('update-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeUpdate']);
+	$router->post('delete-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeDelete']);
+	$router->post('create-event-api',  ['middleware'=>'auth','uses' => 'EventController@CreateEvent']);
+	$router->post('update-event-api',  ['uses' => 'EventController@EventUpdate']);
+	$router->post('get-single-event-api',  ['uses' => 'EventController@get_single_event_data']);
+	$router->post('get-allboxoffice-event-api',  ['uses' => 'EventController@get_all_boxoffice_event_data']);
+	$router->post('delete-event-api',  ['uses' => 'EventController@EventDelete']);
+	
+	
+	$router->get('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
+	$router->post('get-currancy-api',  ['uses' => 'SaleTaxController@get_all_currancy']);
+	
+	$router->post('create-customer-api',  ['uses' => 'CustomerController@Createcustomer']);
+	$router->post('get-single-customer-api',  ['uses' => 'CustomerController@get_single_customer_data']);
+	$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
+	$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
+	$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
 
-  		
+  //start forget & reset password
+  $router->post('forget-password',  ['uses' => 'ForgetPasswordController@sendForgotEmail']);
+  $router->post('reset-password',  ['uses' => 'ForgetPasswordController@resetPassword']);
+	//end forget & reset password
+
+  //start email verification
+	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
+  $router->get('verify-email/{verification_token}', ['uses' => 'UsersController@verifyEmail']);
+	//end email verification
 });

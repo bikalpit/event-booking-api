@@ -16,15 +16,16 @@
       <div class="sec-one" style="width: 100%; display: inline-flex;">
         <div style="width: 50%;"> 
           <h3 style="font-size: 19px; font-weight: 700; margin: 0 0 0 50px; line-height: 1.5;
-          color: #000000c7;">Forgot Password</h3>
+          color: #000000c7;">Email Verification</h3>
         </div>
       </div>
       
       <div class="sec-two" style="color: #616161; font-size: 12px; line-height: 2; padding: 10px 50px;">
-      <p>Hello {{$name}},</p>
-            <p>A Request has been received to change the password for your account.</p>
-      <a  style="background-color:#5AA4EF;color:white;padding:14px 25px;text-align:center;text-decoration: none;display: inline-block; "href="http://eventjio.bi-team.in/api/api/reset-password?accessToken={{$token}}">Reset Password</a>
-            <h2>Thank You!</h2>
+      <h3>Hello <b>{{$name}}</b>, Here are your email verification mail.</h3>
+        <h5>Please click on below link to verify your email</h5>
+        <form action="http://eventjio.bi-team.in/api/api/verify-email/{{$verification_token}}">
+          <a class="btn btn-primary btn-sm" href="http://eventjio.bi-team.in/api/api/verify-email/{{$verification_token}}">Verify email</a>
+        </form>
       </div>
       <div class="devider" style="border-top: 2px dotted #adadad; margin: 10px 65px 0 50px;"></div>
       
