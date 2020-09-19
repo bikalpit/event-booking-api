@@ -46,6 +46,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 		$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
 		$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
 		$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
+
+    $router->post('forget-password',  ['uses' => 'ForgetPasswordController@sendForgotEmail']);
+    $router->post('reset-password',  ['uses' => 'ForgetPasswordController@resetPassword']);
 		
 		
 		//end admin login and signup routes
