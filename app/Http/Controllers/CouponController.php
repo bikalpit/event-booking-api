@@ -1,132 +1,123 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\EtCoupon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Mail\Mailer;
-use App\Mail\SendVerificationMail;
-use App\EtUsers;
-use App\Api_auth;
 use Carbon\Carbon;
+class SaleTaxController extends Controller
+{ 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+    
+    function get_saletax_data(Request $request){
+        $this->validate($request, [
+			'boxoffice_id'=>'required'
+			]);
+        $get_saletax_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+        
+        if(count($get_saletax_info)>0)		
+        {					
+            return $this->sendResponse($get_saletax_info);			
+        }			
+        else			
+        {				
+            return $this->sendResponse("Sorry! Somthing Wrong",200,false);			
+        }
+    }
 
-class CouponController extends Controller
-{
-  public function adminSignup(Request $request)
-  {
-      $this->validate($request, [			
-    			'firstname' => 'required',
-          'password' => 'required',
-    			'email' => 'required|email|unique:et_users',
-    			'description' => 'nullable'
-      ]); 
 
-      $time = strtotime(Carbon::now());
-      $unique_code = "usr".$time.rand(10,99)*rand(10,99);
-      $password = Hash::make($request->password);
-      $user = new EtUsers;
-      $user->email = $request->email;
-			$user->password = $password;
-			$user->firstname = $request->firstname;
-			$user->unique_code = $unique_code;
-			$user->description = $request->description;
-      $user->role = "A";
-      $user->permission = "A";
-      $user->status  = "Y";
-      $user->email_verify = "Y";
-      $user->image = "default.png";
-			$result = $user->save();						
+
+
+
+    public function Createsaletax(Request $request)
+	{
+		$this->validate($request, [
+			'boxoffice_id'=>'required',
+			'name'=>'required',
+			'value'=>'required'
+			]);
+			
+        
+            $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'name'=>$request->name])->first();
+            if($firstCheck !== null)
+			{
+				return $this->sendResponse("System should not allow to enter duplicate SaleTax name for one business.",200,false);
+			}
+            $saletax = new EtCoupon;
+            $time = strtotime(Carbon::now());
+			$saletax->unique_code = "sal".$time.rand(10,99)*rand(10,99);
+			$saletax->boxoffice_id = $request->boxoffice_id;
+            $saletax->name = $request->name;
+            $saletax->value = $request->value;
+	
+			$result = $saletax->save();
 			if($result)			
 			{					
-				return $this->sendResponse("Registration successfully done.");			
+				return $this->sendResponse("SaleTax Added Successfully");			
 			}			
 			else			
 			{				
-				return $this->sendResponse("somthing went wrong",200,false);			
+				return $this->sendResponse("Sorry! Somthing Wrong",200,false);			
 			}
-  }
+			
+			
+    }
 
-  public function isLogin(Request $request)
-  {  
-	    $this->validate($request, [
-  				'email' => 'required|min:3|max:255',
-  				'password' => 'required'
-		  ]);
-      $user = EtUsers::where(['email' => $request->email])->first();
 
-		  if(isset($user))
-      {
-    			if(Hash::check($request->password, $user->password))
-    			{
-      				if($user->email_verify == 'N')
-      				{
-      					 return $this->sendResponse("User is not verified", 200, false);
-      				}
-      				if($user->status == 'N')
-      				{
-      					 return $this->sendResponse("User is not enable", 200, false);
-      				}
+    public function SaleTaxDelete(Request $request)
+	{
+		$this->validate($request, [
+			'unique_code'=>'required'
+			]);
+       
+        
+				
+				
+		$result = EtSalesTax::where('unique_code',$request->unique_code)->delete();		
+		if($result)
+		{
+			return $this->sendResponse("SaleTax Deleted Sucessfully");	
+		}
+		else
+		{
+			return $this->sendResponse("Something went wrong.",200,false);	
+		}
+	}
 
-      				$token_string = hash("sha256", rand());  
-      				$authentication = Api_auth::updateOrCreate(['user_id' => $user->unique_code],[
-        					'user_id' => $user->unique_code,
-        					'token' => $token_string,
-        					'user_type' => $user->role,
-              ]);
 
-              $authentication['firstname'] = $user->firstname;
-              $authentication['lastname'] = $user->lastname;
-              $authentication['email']   = $user->email;
-              $authentication['phone'] = $user->phone;
-              $authentication['image'] = $user->image;
+	public function saleTaxUpdate(Request $request)
+	{
+		$this->validate($request, [			
+			'unique_code'=>'required',
+			'boxoffice_id'=>'required',
+			'name'=>'required',
+			'value'=>'required'
+			]);
 
-				      return $this->sendResponse($authentication);
-			    } 
-			    else 
-			    {						 
-    				  return $this->sendResponse("email or password is wrong", 200, false);
-    			}
+		
+		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
+				'unique_code'=>$request->unique_code,
+				'boxoffice_id'=>$request->boxoffice_id,
+				'name'=>$request->name,
+				'value'=>$request->value
+				]);
+		if(!empty($result))
+		{
+			return $this->sendResponse("SaleTax Updated Sucessfully");	
+		}
+		else
+		{
+			return $this->sendResponse("Something Went Wrong.",200,false);
+		}
+	}
+	
 
-    	} 
-      return $this->sendResponse("email or password is wrong", 200, false);
-  }
-
-  public function demoTest(Request $request)
-  {
-	    $this->validate($request, [			
-    			'firstname' => 'required',
-    			'password' => 'required',
-    			'email' => 'required|email|unique:et_users',
-    			'description' => 'nullable',
-    			'phone'  => 'required|numeric',
-    			'zipcode'=> 'required|min:5|max:6'
-		  ]); 
-  }
-
-  public function sendVerificationEmail(Request $request)
-  {
-      $this->validate($request, [
-          'email' => 'required|email'
-      ]);
-
-      $userInfo = EtUsers::where('email', $request->email)->first();
-      $name = $userInfo->firstname.' '.$userInfo->lastname;
-      $email = $request->email;
-      $verification_token = substr( str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"), 0, 20 );
-      EtUsers::where('email', $request->email)->update(['email_verification_token'=>$verification_token]);
-      $data = ['name'=>$name, 'verification_token'=>$verification_token];
-      try{
-          Mail::to($email)->send(new SendVerificationMail($data));  
-      }catch(\Exception $e){
-          $msg = $e->getMessage();
-          return $this->sendResponse($msg,200,false);
-      }
-          return $this->sendResponse("Mail sent successfully.");
-  }
-
-  public function verifyEmail($verification_token){
-      EtUsers::where('email_verification_token', $verification_token)->update(['email_verify'=>'Y']);
-      return view('verify-email');
-  }
-}    
+    //
+}
