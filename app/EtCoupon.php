@@ -6,6 +6,7 @@ class EtCoupon extends Model
     protected $table = 'et_coupon';
     protected $fillable = [
         'unique_code',
+        'boxoffice_id',
         'coupon_title',
         'coupon_code',
         'valid_from',
