@@ -60,10 +60,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->get('verify-email/{verification_token}', ['uses' => 'UsersController@verifyEmail']);
 	//end email verification
 
-	$router->post('create-customer-api',  ['uses' => 'CustomerController@Createcustomer']);
-	$router->post('get-single-customer-api',  ['uses' => 'CustomerController@get_single_customer_data']);
-	$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
-	$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
-	$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
+	$router->post('create-coupon-api',  ['uses' => 'CouponController@CreateCoupon']);
+	$router->post('get-single-coupon-api',  ['uses' => 'CouponController@get_coupon_data']);
+	$router->post('get-all-coupon-api',  ['uses' => 'CouponController@get_all_coupon_data']);
+	$router->post('delete-coupon-api',  ['uses' => 'CouponController@CouponDelete']);
+	$router->post('update-coupon-api',  ['uses' => 'CouponController@CouponUpdate']);
 
 });

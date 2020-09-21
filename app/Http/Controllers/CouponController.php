@@ -32,6 +32,22 @@ class CouponController extends Controller
         }
     }
 
+    function get_all_coupon_data(Request $request){
+        $this->validate($request, [
+			'boxoffice_id'=>'required'
+			]);
+        $get_all_coupon_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+        
+        if(count($get_all_coupon_info)>0)		
+        {					
+            return $this->sendResponse($get_all_coupon_info);			
+        }			
+        else			
+        {				
+            return $this->sendResponse("Sorry! Somthing Wrong",200,false);			
+        }
+    }
+
 
 
 
