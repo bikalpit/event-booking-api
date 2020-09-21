@@ -135,7 +135,6 @@ class CouponController extends Controller
 
 		
 		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
-				'boxoffice_id'=>$request->boxoffice_id,
 				'coupon_title'=>$request->coupon_title,
 				'coupon_code'=>$request->coupon_code,
 				'valid_from'=>$request->valid_from,
