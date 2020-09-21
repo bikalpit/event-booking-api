@@ -69,7 +69,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
   //start email unique validation
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
-  //end email unique validation
+  //end email unique validation aman
 
   //start get timezones
   $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
