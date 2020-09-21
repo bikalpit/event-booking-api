@@ -129,4 +129,25 @@ class UsersController extends Controller
       EtUsers::where('email_verification_token', $verification_token)->update(['email_verify'=>'Y']);
       return view('verify-email');
   }
+
+  public function checkEmail(Request $request)
+  {
+      $this->validate($request, [
+          'email' => 'required|email'
+      ]);
+
+      $allUsers = EtUsers::where('email',$request->email)->first();
+
+      if ($allUsers) {
+        return $this->sendResponse("email already exist.", 200, false);
+      }else{
+        return $this->sendResponse("email is available.");
+      }
+  }
+
+  public function getTimezones(Request $request)
+  {
+      $timezones = DB::table('et_timezone')->get();
+      return $this->sendResponse($timezones);
+  }
 }    

@@ -66,4 +66,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('delete-coupon-api',  ['uses' => 'CouponController@CouponDelete']);
 	$router->post('update-coupon-api',  ['uses' => 'CouponController@CouponUpdate']);
 
+  //start email unique validation
+  $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
+  //end email unique validation
+
+  //start get timezones
+  $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
+  //end get timezones
+
 });
