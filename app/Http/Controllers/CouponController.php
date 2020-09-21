@@ -163,6 +163,28 @@ $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_ti
 		{
 			return $this->sendResponse("Something Went Wrong.",200,false);
 		}
+  }
+  
+
+  public function CouponStatusUpdate(Request $request)
+	{
+		$this->validate($request, [			
+			'unique_code'=>'required',
+			'status'=>'required|in:A,IA,E,S'
+			]);
+
+	
+		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
+						'status'=>$request->status
+				]);
+		if(!empty($result))
+		{
+			return $this->sendResponse("Coupon status updated sucessfully.");	
+		}
+		else
+		{
+			return $this->sendResponse("Something Went Wrong.",200,false);
+		}
 	}
 	
 
