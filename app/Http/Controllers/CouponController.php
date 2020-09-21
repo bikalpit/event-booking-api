@@ -133,7 +133,11 @@ class CouponController extends Controller
 			'valid_till'=>'required|date|date_format:Y-m-d'
 			]);
 
-		
+$firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
+      if($firstCheck !== null)
+{
+  return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice Id.",200,false);
+}	
 		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
 				'coupon_title'=>$request->coupon_title,
 				'coupon_code'=>$request->coupon_code,
