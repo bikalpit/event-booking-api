@@ -24,6 +24,8 @@ class CreateEtCouponTable extends Migration
             $table->enum('discount_type', ['P','F']);
             $table->string('discount',100);
             $table->date('valid_till');
+            $table->integer('used');
+            $table->enum('status', ['A','IA','E','S']);
             $table->timestamps();
             $table->collation = "utf8_general_ci";
             $table->charset = 'utf8';
