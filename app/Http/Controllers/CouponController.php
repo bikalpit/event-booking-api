@@ -16,15 +16,15 @@ class SaleTaxController extends Controller
         //
     }
     
-    function get_saletax_data(Request $request){
+    function get_coupon_data(Request $request){
         $this->validate($request, [
-			'boxoffice_id'=>'required'
+			'unique_code'=>'required'
 			]);
-        $get_saletax_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+        $get_coupon_info = EtCoupon::where(['unique_code'=>$request->unique_code])->get();
         
-        if(count($get_saletax_info)>0)		
+        if(count($get_coupon_info)>0)		
         {					
-            return $this->sendResponse($get_saletax_info);			
+            return $this->sendResponse($get_coupon_info);			
         }			
         else			
         {				
@@ -36,31 +36,42 @@ class SaleTaxController extends Controller
 
 
 
-    public function Createsaletax(Request $request)
+    public function CreateCoupon(Request $request)
 	{
 		$this->validate($request, [
 			'boxoffice_id'=>'required',
-			'name'=>'required',
-			'value'=>'required'
+			'coupon_title'=>'required',
+			'coupon_code'=>'required',
+			'valid_from'=>'required|date|date_format:Y-m-d',
+			'max_redemption'=>'required',
+			'discount_type'=>'required|in:P,F',
+			'discount'=>'required',
+			'valid_till'=>'required|date|date_format:Y-m-d'
 			]);
 			
         
-            $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'name'=>$request->name])->first();
+            $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
             if($firstCheck !== null)
 			{
-				return $this->sendResponse("System should not allow to enter duplicate SaleTax name for one business.",200,false);
+				return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice Id.",200,false);
 			}
-            $saletax = new EtCoupon;
+            $etcoupon = new EtCoupon;
             $time = strtotime(Carbon::now());
-			$saletax->unique_code = "sal".$time.rand(10,99)*rand(10,99);
-			$saletax->boxoffice_id = $request->boxoffice_id;
-            $saletax->name = $request->name;
-            $saletax->value = $request->value;
+			$etcoupon->unique_code = "cou".$time.rand(10,99)*rand(10,99);
+			      $etcoupon->boxoffice_id = $request->boxoffice_id;
+			      $etcoupon->coupon_title = $request->coupon_title;
+			      $etcoupon->coupon_code = $request->coupon_code;
+			      $etcoupon->valid_from = $request->valid_from;
+			      $etcoupon->max_redemption = $request->max_redemption;
+			      $etcoupon->discount_type = $request->discount_type;
+			      $etcoupon->discount = $request->discount;
+            $etcoupon->valid_till = $request->valid_till;
+            
 	
-			$result = $saletax->save();
+			$result = $etcoupon->save();
 			if($result)			
 			{					
-				return $this->sendResponse("SaleTax Added Successfully");			
+				return $this->sendResponse("Coupon Added Successfully");			
 			}			
 			else			
 			{				
