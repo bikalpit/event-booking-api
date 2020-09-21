@@ -82,7 +82,7 @@ class SaleTaxController extends Controller
     }
 
 
-    public function SaleTaxDelete(Request $request)
+    public function CouponDelete(Request $request)
 	{
 		$this->validate($request, [
 			'unique_code'=>'required'
@@ -91,10 +91,10 @@ class SaleTaxController extends Controller
         
 				
 				
-		$result = EtSalesTax::where('unique_code',$request->unique_code)->delete();		
+		$result = EtCoupon::where('unique_code',$request->unique_code)->delete();		
 		if($result)
 		{
-			return $this->sendResponse("SaleTax Deleted Sucessfully");	
+			return $this->sendResponse("Coupon Deleted Sucessfully");	
 		}
 		else
 		{
@@ -103,25 +103,34 @@ class SaleTaxController extends Controller
 	}
 
 
-	public function saleTaxUpdate(Request $request)
+	public function CouponUpdate(Request $request)
 	{
 		$this->validate($request, [			
 			'unique_code'=>'required',
 			'boxoffice_id'=>'required',
-			'name'=>'required',
-			'value'=>'required'
+			'coupon_title'=>'required',
+			'coupon_code'=>'required',
+			'valid_from'=>'required|date|date_format:Y-m-d',
+			'max_redemption'=>'required',
+			'discount_type'=>'required|in:P,F',
+			'discount'=>'required',
+			'valid_till'=>'required|date|date_format:Y-m-d'
 			]);
 
 		
 		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
-				'unique_code'=>$request->unique_code,
 				'boxoffice_id'=>$request->boxoffice_id,
-				'name'=>$request->name,
-				'value'=>$request->value
+				'coupon_title'=>$request->coupon_title,
+				'coupon_code'=>$request->coupon_code,
+				'valid_from'=>$request->valid_from,
+				'max_redemption'=>$request->max_redemption,
+				'discount_type'=>$request->discount_type,
+				'discount'=>$request->discount,
+				'valid_till'=>$request->valid_till
 				]);
 		if(!empty($result))
 		{
-			return $this->sendResponse("SaleTax Updated Sucessfully");	
+			return $this->sendResponse("Coupon Updated Sucessfully");	
 		}
 		else
 		{
