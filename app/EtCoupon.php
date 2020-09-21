@@ -13,7 +13,9 @@ class EtCoupon extends Model
         'max_redemption',
         'discount_type',
         'discount',
-        'valid_till'
+        'valid_till',
+        'used',
+        'status'
     ];    
     
 }
