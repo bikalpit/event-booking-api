@@ -65,6 +65,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('get-all-coupon-api',  ['uses' => 'CouponController@get_all_coupon_data']);
 	$router->post('delete-coupon-api',  ['uses' => 'CouponController@CouponDelete']);
 	$router->post('update-coupon-api',  ['uses' => 'CouponController@CouponUpdate']);
+	$router->post('update-coupon-status-api',  ['uses' => 'CouponController@CouponStatusUpdate']);
 
   //start email unique validation
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
