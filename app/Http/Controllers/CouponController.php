@@ -87,7 +87,7 @@ class CouponController extends Controller
 			$result = $etcoupon->save();
 			if($result)			
 			{					
-				return $this->sendResponse("Coupon Added Successfully.");			
+				return $this->sendResponse("Coupon added successfully.");			
 			}			
 			else			
 			{				
@@ -110,7 +110,7 @@ class CouponController extends Controller
 		$result = EtCoupon::where('unique_code',$request->unique_code)->delete();		
 		if($result)
 		{
-			return $this->sendResponse("Coupon Deleted Sucessfully.");	
+			return $this->sendResponse("Coupon deleted sucessfully.");	
 		}
 		else
 		{
@@ -149,7 +149,7 @@ $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_ti
 				]);
 		if(!empty($result))
 		{
-			return $this->sendResponse("Coupon Updated Sucessfully.");	
+			return $this->sendResponse("Coupon updated sucessfully.");	
 		}
 		else
 		{
