@@ -59,4 +59,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
   $router->get('verify-email/{verification_token}', ['uses' => 'UsersController@verifyEmail']);
 	//end email verification
+
+	$router->post('create-customer-api',  ['uses' => 'CustomerController@Createcustomer']);
+	$router->post('get-single-customer-api',  ['uses' => 'CustomerController@get_single_customer_data']);
+	$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
+	$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
+	$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
+
 });

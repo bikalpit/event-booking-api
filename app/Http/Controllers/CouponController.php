@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\EtCoupon;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-class SaleTaxController extends Controller
+class CouponController extends Controller
 { 
     /**
      * Create a new controller instance.
