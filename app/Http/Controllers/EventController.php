@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use App\EtEvent;
 use App\EtEventSetting;
 use App\EtEventTicket;
+use App\EtEventImage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DB;
 class EventController extends Controller
 {
     public function __construct()
@@ -30,7 +32,6 @@ class EventController extends Controller
             'platform'=>'nullable|in:Z,GH,YU,HP,VM,SKY,OTH,N',
             'event_link'=>'nullable',
             'event_status'=>'required|in:draft,publish',
-            'unique_code'=>'required',
             'timezone'=>'required',
             'make_donation'=>'required|in:Y,N',
             'event_button_title'=>'required',
@@ -46,12 +47,11 @@ class EventController extends Controller
             'access_code'=>'nullable',
             'hide_share_button'=>'required|in:Y,N',
             'custom_sales_tax'=>'required|in:Y,N',
-            'sales_tax_amt'=>'nullable',
-            'sales_tax_label'=>'nullable',
-            'sales_tax_id'=>'required',
+            'sales_tax'=>'nullable',
             'ticket_ids'=>'nullable',
+            'image'=>'nullable',
         ]);
-        //dd($request->all());
+
         $firstCheck = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id,'event_title'=>$request->event_title])->first();
         if($firstCheck !== null)
         {
@@ -79,6 +79,20 @@ class EventController extends Controller
               
         $result = $eventobj->save();
 
+        if($request->image)
+        {
+            $path = app()->basePath('public/event-images/');
+            $fileName = $this->imageUpload($path, $request->image);
+            foreach ($fileName as $file) {
+                $eventimg = new EtEventImage;
+                $eventimg->unique_code = $eventobj->unique_code;
+                $eventimg->event_id = $eventobj->id;
+                $eventimg->image = $file;
+                
+                $save_eventimg = $eventimg->save();
+            }
+        }
+
         $eventsettingobj = new EtEventSetting;
         $eventsettingobj->unique_code = "est".$time.rand(10,99)*rand(10,99);
         $eventsettingobj->event_id = $eventobj->unique_code;
@@ -101,13 +115,7 @@ class EventController extends Controller
         $eventsettingobj->access_code = $request->access_code;
         $eventsettingobj->hide_share_button = $request->hide_share_button;
         $eventsettingobj->custom_sales_tax = $request->custom_sales_tax;
-        if ($request->sales_tax_amt == null) {
-          $eventsettingobj->sales_tax_amt = '0.00';
-        }else{
-          $eventsettingobj->sales_tax_amt = $request->sales_tax_amt;
-        }
-        $eventsettingobj->sales_tax_label = $request->sales_tax_label;
-        $eventsettingobj->sales_tax_id = $request->sales_tax_id;
+        $eventsettingobj->sales_tax = json_encode($request->sales_tax);
 
         $save_eventsetting = $eventsettingobj->save();
 
@@ -231,5 +239,11 @@ class EventController extends Controller
         {
             return $this->sendResponse("Something Went Wrong.",200,false);
         }
+    }
+
+    public function getDefaultImages()
+    {
+        $default_images = DB::table('et_default_event_images')->get();
+        return $this->sendResponse($default_images);
     }
 }

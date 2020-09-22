@@ -78,4 +78,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //start ticket APIs
   $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
   //end ticket APIs
+
+  //get default images
+  $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
 });
