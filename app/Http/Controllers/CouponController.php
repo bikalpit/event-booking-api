@@ -62,9 +62,7 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-      'valid_till'=>'required|date|date_format:Y-m-d',
-      'used'=>'required',
-			'status'=>'required|in:A,IA,E,S'
+      'valid_till'=>'required|date|date_format:Y-m-d'
 			]);
 			
         
@@ -84,8 +82,7 @@ class CouponController extends Controller
 			      $etcoupon->discount_type = $request->discount_type;
 			      $etcoupon->discount = $request->discount;
             $etcoupon->valid_till = $request->valid_till;
-            $etcoupon->used = $request->used;
-            $etcoupon->status = $request->status;
+           
             
 	
 			$result = $etcoupon->save();
@@ -134,9 +131,8 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-      'valid_till'=>'required|date|date_format:Y-m-d',
-      'used'=>'required',
-			'status'=>'required|in:A,IA,E,S'
+      'valid_till'=>'required|date|date_format:Y-m-d'
+     
 			]);
 
 $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
@@ -151,9 +147,7 @@ $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_ti
 				'max_redemption'=>$request->max_redemption,
 				'discount_type'=>$request->discount_type,
 				'discount'=>$request->discount,
-				'valid_till'=>$request->valid_till,
-				'used'=>$request->used,
-				'status'=>$request->status
+				'valid_till'=>$request->valid_till
 				]);
 		if(!empty($result))
 		{
