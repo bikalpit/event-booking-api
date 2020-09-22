@@ -123,6 +123,7 @@ class VoucherController extends Controller
     public function VoucherUpdate(Request $request)
 	{
 		$this->validate($request, [			
+			'unique_code'=>'required',
 			'boxoffice_id'=>'required',
 			'voucher_name'=>'required',
 			'voucher_value'=>'required',
