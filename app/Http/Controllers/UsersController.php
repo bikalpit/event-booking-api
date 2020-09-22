@@ -10,6 +10,7 @@ use App\Mail\SendVerificationMail;
 use App\EtUsers;
 use App\Api_auth;
 use Carbon\Carbon;
+use DB;
 
 class UsersController extends Controller
 {
