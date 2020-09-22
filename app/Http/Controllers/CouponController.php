@@ -34,7 +34,8 @@ class CouponController extends Controller
 
     function get_all_coupon_data(Request $request){
         $this->validate($request, [
-			'boxoffice_id'=>'required'
+			'boxoffice_id'=>'required',
+			'search'=>'nullable'
 			]);
         $get_all_coupon_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
         
@@ -62,7 +63,7 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-      'valid_till'=>'required|date|date_format:Y-m-d'
+            'valid_till'=>'required|date|date_format:Y-m-d'
 			]);
 			
         
