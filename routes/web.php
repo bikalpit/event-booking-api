@@ -67,6 +67,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('update-coupon-api',  ['uses' => 'CouponController@CouponUpdate']);
 	$router->post('update-coupon-status-api',  ['uses' => 'CouponController@CouponStatusUpdate']);
 
+
+
+	$router->post('create-voucher-api',  ['uses' => 'VoucherController@Createvoucher']);
+	$router->post('get-single-voucher-api',  ['uses' => 'VoucherController@get_voucher_data']);
+	$router->post('get-all-voucher-api',  ['uses' => 'VoucherController@get_all_voucher_data']);
+	$router->post('delete-voucher-api',  ['uses' => 'VoucherController@VoucherDelete']);
+	$router->post('update-voucher-api',  ['uses' => 'VoucherController@VoucherUpdate']);
+
   //start email unique validation
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
   //end email unique validation aman 
