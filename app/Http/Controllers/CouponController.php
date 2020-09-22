@@ -62,7 +62,9 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-			'valid_till'=>'required|date|date_format:Y-m-d'
+      'valid_till'=>'required|date|date_format:Y-m-d',
+      'used'=>'required',
+			'status'=>'required|in:A,IA,E,S'
 			]);
 			
         
@@ -82,6 +84,8 @@ class CouponController extends Controller
 			      $etcoupon->discount_type = $request->discount_type;
 			      $etcoupon->discount = $request->discount;
             $etcoupon->valid_till = $request->valid_till;
+            $etcoupon->used = $request->used;
+            $etcoupon->status = $request->status;
             
 	
 			$result = $etcoupon->save();
@@ -130,7 +134,9 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-			'valid_till'=>'required|date|date_format:Y-m-d'
+      'valid_till'=>'required|date|date_format:Y-m-d',
+      'used'=>'required',
+			'status'=>'required|in:A,IA,E,S'
 			]);
 
 $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
@@ -145,11 +151,35 @@ $firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_ti
 				'max_redemption'=>$request->max_redemption,
 				'discount_type'=>$request->discount_type,
 				'discount'=>$request->discount,
-				'valid_till'=>$request->valid_till
+				'valid_till'=>$request->valid_till,
+				'used'=>$request->used,
+				'status'=>$request->status
 				]);
 		if(!empty($result))
 		{
 			return $this->sendResponse("Coupon updated sucessfully.");	
+		}
+		else
+		{
+			return $this->sendResponse("Something Went Wrong.",200,false);
+		}
+  }
+  
+
+  public function CouponStatusUpdate(Request $request)
+	{
+		$this->validate($request, [			
+			'unique_code'=>'required',
+			'status'=>'required|in:A,IA,E,S'
+			]);
+
+	
+		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
+						'status'=>$request->status
+				]);
+		if(!empty($result))
+		{
+			return $this->sendResponse("Coupon status updated sucessfully.");	
 		}
 		else
 		{
