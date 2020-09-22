@@ -37,8 +37,16 @@ class CouponController extends Controller
 			'boxoffice_id'=>'required',
 			'search'=>'nullable'
 			]);
-        $get_all_coupon_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
-        
+
+			if($request->search !=''){
+				$search_item = $request->search;
+				$get_all_coupon_info = EtCoupon::where('boxoffice_id',$request->boxoffice_id)->where(function($query) use ($search_item) {
+					$query->where('coupon_title', 'LIKE', '%'.$search_item.'%')
+					->orWhere('coupon_code', 'LIKE', '%'.$search_item.'%');
+					})->get();
+			}else{
+				$get_all_coupon_info = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+			}
         if(count($get_all_coupon_info)>0)		
         {					
             return $this->sendResponse($get_all_coupon_info);			
