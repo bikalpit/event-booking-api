@@ -81,7 +81,7 @@ class CouponController extends Controller
 			      $etcoupon->max_redemption = $request->max_redemption;
 			      $etcoupon->discount_type = $request->discount_type;
 			      $etcoupon->discount = $request->discount;
-            $etcoupon->valid_till = $request->valid_till;
+                  $etcoupon->valid_till = $request->valid_till;
            
             
 	
@@ -131,7 +131,7 @@ class CouponController extends Controller
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
 			'discount'=>'required',
-      'valid_till'=>'required|date|date_format:Y-m-d'
+            'valid_till'=>'required|date|date_format:Y-m-d'
      
 			]);
 
