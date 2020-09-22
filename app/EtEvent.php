@@ -22,4 +22,8 @@ class EtEvent extends Model
         'event_status'
     ];    
     
+    public function tickets()
+    {
+      return $this->belongsToMany('App\EtTickets', 'et_event_ticket', 'event_id', 'ticket_id');
+    }
 }

@@ -75,4 +75,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
   //end get timezones
 
+  //start ticket APIs
+  $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
+  //end ticket APIs
 });
