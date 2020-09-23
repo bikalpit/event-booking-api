@@ -20,10 +20,10 @@ class EventController extends Controller
         $this->validate($request, [
             'boxoffice_id'=>'required',
             'event_title'=>'required',
-            'start_date'=>'required|date|date_format:Y-m-d',
-            'end_date'=>'required|date|date_format:Y-m-d',
-            'start_time'=>'required|date_format:H:i',
-            'end_time'=>'required|date_format:H:i',
+            'start_date'=>'required',
+            'end_date'=>'required',
+            'start_time'=>'required',
+            'end_time'=>'required',
             'venue_name'=>'nullable',
             'postal_code'=>'nullable',
             'country'=>'nullable',
@@ -211,10 +211,10 @@ class EventController extends Controller
         $this->validate($request, [
             'unique_code'=>'required',
             'event_title'=>'required',
-            'start_date'=>'required|date|date_format:Y-m-d',
-            'end_date'=>'required|date|date_format:Y-m-d',
-            'start_time'=>'required|date_format:H:i',
-            'end_time'=>'required|date_format:H:i',
+            'start_date'=>'required',
+            'end_date'=>'required',
+            'start_time'=>'required',
+            'end_time'=>'required',
             'venue_name'=>'nullable',
             'postal_code'=>'nullable',
             'country'=>'nullable',
@@ -362,10 +362,10 @@ class EventController extends Controller
         $this->validate($request, [
             'unique_code'=>'required',
             'event_title'=>'required',
-            'start_date'=>'required|date|date_format:Y-m-d',
-            'end_date'=>'required|date|date_format:Y-m-d',
-            'start_time'=>'required|date_format:H:i',
-            'end_time'=>'required|date_format:H:i',
+            'start_date'=>'required',
+            'end_date'=>'required',
+            'start_time'=>'required',
+            'end_time'=>'required',
             'event_status'=>'required|in:draft,publish'
         ]);
 
