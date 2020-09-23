@@ -75,16 +75,27 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('delete-voucher-api',  ['uses' => 'VoucherController@VoucherDelete']);
 	$router->post('update-voucher-api',  ['uses' => 'VoucherController@VoucherUpdate']);
 
+
+	$router->post('create-broadcast-api',  ['uses' => 'BroadcastController@CreateBroadcast']);
+	$router->post('get-single-broadcast-api',  ['uses' => 'BroadcastController@get_broadcast_data']);
+	$router->post('get-all-broadcast-api',  ['uses' => 'BroadcastController@get_all_broadcast_data']);
+	$router->post('delete-broadcast-api',  ['uses' => 'BroadcastController@BroadcastDelete']);
+	$router->post('update-broadcast-api',  ['uses' => 'BroadcastController@BroadcastUpdate']);
+
+
   //start email unique validation
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
   //end email unique validation aman 
 
-  //start get timezones
+  //start timezone APIs
   $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
-  //end get timezones
+  //end timezone APIs
 
   //start ticket APIs
   $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
+  $router->post('update-ticket',  ['uses' => 'TicketController@updateTicket']);
+  $router->post('get-single-ticket',  ['uses' => 'TicketController@getSingleTicket']);
+  $router->post('delete-ticket',  ['uses' => 'TicketController@deleteEvent']);
   //end ticket APIs
 
   //get default images

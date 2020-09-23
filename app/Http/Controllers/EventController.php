@@ -20,10 +20,10 @@ class EventController extends Controller
         $this->validate($request, [
             'boxoffice_id'=>'required',
             'event_title'=>'required',
-            'start_date'=>'required|date|date_format:Y-m-d',
-            'end_date'=>'required|date|date_format:Y-m-d',
-            'start_time'=>'required|date_format:H:i',
-            'end_time'=>'required|date_format:H:i',
+            'start_date'=>'required',
+            'end_date'=>'required',
+            'start_time'=>'required',
+            'end_time'=>'required',
             'venue_name'=>'nullable',
             'postal_code'=>'nullable',
             'country'=>'nullable',
@@ -50,6 +50,7 @@ class EventController extends Controller
             'sales_tax'=>'nullable',
             'ticket_ids'=>'nullable',
             'image'=>'nullable',
+            'default_img'=>'nullable',
         ]);
 
         $firstCheck = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id,'event_title'=>$request->event_title])->first();
@@ -73,7 +74,11 @@ class EventController extends Controller
         $eventobj->country = $request->country;
         $eventobj->online_event = $request->online_event;
         $eventobj->description = $request->description;
-        $eventobj->platform = $request->platform;
+        if ($request->platform == '') {
+            $eventobj->platform = 'N';
+        }else{
+            $eventobj->platform = $request->platform;
+        }
         $eventobj->event_link = $request->event_link;
         $eventobj->event_status = $request->event_status;
               
@@ -84,6 +89,18 @@ class EventController extends Controller
             $path = app()->basePath('public/event-images/');
             $fileName = $this->imageUpload($path, $request->image);
             foreach ($fileName as $file) {
+                $eventimg = new EtEventImage;
+                $eventimg->unique_code = $eventobj->unique_code;
+                $eventimg->event_id = $eventobj->id;
+                $eventimg->image = $file;
+                
+                $save_eventimg = $eventimg->save();
+            }
+        }
+
+        if($request->default_img)
+        {
+            foreach ($request->default_img as $file) {
                 $eventimg = new EtEventImage;
                 $eventimg->unique_code = $eventobj->unique_code;
                 $eventimg->event_id = $eventobj->id;
@@ -130,11 +147,11 @@ class EventController extends Controller
 
         if($result)
         {
-            return $this->sendResponse("Event Added Successfully");     
+            return $this->sendResponse("Event added successfully.");      
         }
         else
         {
-            return $this->sendResponse("Sorry! Somthing Wrong",200,false);      
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
 
@@ -189,32 +206,57 @@ class EventController extends Controller
         }
     }
 
-
     public function EventUpdate(Request $request)
     {
         $this->validate($request, [
             'unique_code'=>'required',
-            'boxoffice_id'=>'required',
             'event_title'=>'required',
             'start_date'=>'required',
             'end_date'=>'required',
             'start_time'=>'required',
             'end_time'=>'required',
-            'venue_name'=>'required',
-            'postal_code'=>'required',
-            'country'=>'required',
+            'venue_name'=>'nullable',
+            'postal_code'=>'nullable',
+            'country'=>'nullable',
             'online_event'=>'required|in:Y,N',
             'description'=>'required',
-            'platform'=>'required|in:Z,GH,YU,HP,VM,SKY,OTH,N',
-            'event_link'=>'required',
-            'event_status'=>'required|in:draft,publish'
+            'platform'=>'nullable|in:Z,GH,YU,HP,VM,SKY,OTH,N',
+            'event_link'=>'nullable',
+            'event_status'=>'required|in:draft,publish',
+            'timezone'=>'required',
+            'make_donation'=>'required|in:Y,N',
+            'event_button_title'=>'required',
+            'donation_title'=>'nullable',
+            'donation_amt'=>'nullable',
+            'donation_description'=>'nullable',
+            'ticket_avilable'=>'required|in:PB,SDT,SIB',
+            'ticket_unavilable'=>'required|in:TOS,SDT,SIB',
+            'redirect_confirm_page'=>'required|in:Y,N',
+            'redirect_url'=>'nullable',
+            'hide_office_listing'=>'required|in:Y,N',
+            'customer_access_code'=>'required|in:Y,N',
+            'access_code'=>'nullable',
+            'hide_share_button'=>'required|in:Y,N',
+            'custom_sales_tax'=>'required|in:Y,N',
+            'sales_tax'=>'nullable',
+            'ticket_ids'=>'nullable',
+            'image'=>'nullable',
+            'default_img'=>'nullable',
         ]);
-        $firstCheck = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id,'event_title'=>$request->event_title])->first();
+
+        /*$firstCheck = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id,'event_title'=>$request->event_title])->first();
 
         if($firstCheck !== null)
         {
             return $this->sendResponse("System should not allow to enter duplicate Event name for Same Boxoffice.",200,false);
+        }*/
+
+        if ($request->platform == '') {
+            $platform = 'N';
+        }else{
+            $platform = $request->platform;
         }
+
         $result = EtEvent::where('unique_code',$request->unique_code)->update([
             'event_title'=>$request->event_title,
             'start_date'=>$request->start_date,
@@ -226,24 +268,141 @@ class EventController extends Controller
             'country'=>$request->country,
             'online_event'=>$request->online_event,
             'description'=>$request->description,
-            'platform'=>$request->platform,
+            'platform'=>$platform,
             'event_link'=>$request->event_link,
             'event_status'=>$request->event_status
         ]);
 
+        $Event = EtEvent::where('unique_code', $request->unique_code)->first();
+
+        if($request->image)
+        {
+            $path = app()->basePath('public/event-images/');
+            $fileName = $this->imageUpload($path, $request->image);
+            foreach ($fileName as $file) {
+                $eventimg = new EtEventImage;
+                $eventimg->unique_code = $request->unique_code;
+                $eventimg->event_id = $Event->id;
+                $eventimg->image = $file;
+                
+                $save_eventimg = $eventimg->save();
+            }
+        }
+
+        if($request->default_img)
+        {
+            foreach ($request->default_img as $file) {
+                $eventimg = new EtEventImage;
+                $eventimg->unique_code = $eventobj->unique_code;
+                $eventimg->event_id = $eventobj->id;
+                $eventimg->image = $file;
+                
+                $save_eventimg = $eventimg->save();
+            }
+        }
+
+        if ($request->donation_amt == null) {
+            $donation_amt = '0.00';
+        }else{
+            $donation_amt = $request->donation_amt;
+        }
+
+        $update_setting = EtEventSetting::where('event_id',$request->unique_code)->update([
+            'timezone'=>$request->timezone,
+            'make_donation'=>$request->make_donation,
+            'event_button_title'=>$request->event_button_title,
+            'donation_title'=>$request->donation_title,
+            'donation_amt'=>$donation_amt,
+            'donation_description'=>$request->donation_description,
+            'ticket_avilable'=>$request->ticket_avilable,
+            'ticket_unavilable'=>$request->ticket_unavilable,
+            'redirect_confirm_page'=>$request->redirect_confirm_page,
+            'redirect_url'=>$request->redirect_url,
+            'hide_office_listing'=>$request->hide_office_listing,
+            'customer_access_code'=>$request->customer_access_code,
+            'access_code'=>$request->access_code,
+            'hide_share_button'=>$request->hide_share_button,
+            'custom_sales_tax'=>$request->custom_sales_tax,
+            'sales_tax'=>json_encode($request->sales_tax)
+        ]);
+
+        if ($request->ticket_ids != null) {
+            foreach ($request->ticket_ids as $ticket) {
+                $event_ticket = new EtEventTicket;
+                $event_ticket->event_id = $request->unique_code;
+                $event_ticket->ticket_id = $ticket;
+                $save_event_ticket = $event_ticket->save();
+            }
+        }
+
         if(!empty($result))
         {
-            return $this->sendResponse("Event Updated Sucessfully");
+            return $this->sendResponse("Event updated sucessfully.");
         }
         else
         {
-            return $this->sendResponse("Something Went Wrong.",200,false);
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);
         }
     }
 
-    public function getDefaultImages()
+    public function getDefaultImages(Request $request)
     {
+        $defaultImg = [];
         $default_images = DB::table('et_default_event_images')->get();
-        return $this->sendResponse($default_images);
+        foreach ($default_images as $image) {
+            $path = app()->basePath('public/event-images/');
+            $defaultImg[] = ['id'=>$image->id,'name'=>$image->name,'path'=>$path.$image->name];
+        }
+
+        return $this->sendResponse($defaultImg);
+    }
+
+    public function duplicateEvent(Request $request)
+    {
+        $this->validate($request, [
+            'unique_code'=>'required',
+            'event_title'=>'required',
+            'start_date'=>'required',
+            'end_date'=>'required',
+            'start_time'=>'required',
+            'end_time'=>'required',
+            'event_status'=>'required|in:draft,publish'
+        ]);
+
+        $Event = EtEvent::where('unique_code',$request->unique_code)->first();
+
+        $time = strtotime(Carbon::now());
+
+        $eventobj = new EtEvent;
+        $eventobj->unique_code = "eve".$time.rand(10,99)*rand(10,99);
+        $eventobj->boxoffice_id = $Event->boxoffice_id;
+        $eventobj->event_title = $request->event_title;
+        $eventobj->start_date = $request->start_date;
+        $eventobj->end_date = $request->end_date;
+        $eventobj->start_time = $request->start_time;
+        $eventobj->end_time = $request->end_time;
+        $eventobj->venue_name = $Event->venue_name;
+        $eventobj->postal_code = $Event->postal_code;
+        $eventobj->country = $Event->country;
+        $eventobj->online_event = $Event->online_event;
+        $eventobj->description = $Event->description;
+        if ($Event->platform == '') {
+            $eventobj->platform = 'N';
+        }else{
+            $eventobj->platform = $Event->platform;
+        }
+        $eventobj->event_link = $Event->event_link;
+        $eventobj->event_status = $request->event_status;
+              
+        $result = $eventobj->save();
+
+        if($result)
+        {
+            return $this->sendResponse("Duplicate event created successfully.");      
+        }
+        else
+        {
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
+        }
     }
 }

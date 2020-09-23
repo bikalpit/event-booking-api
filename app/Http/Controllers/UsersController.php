@@ -126,7 +126,8 @@ class UsersController extends Controller
           return $this->sendResponse("Mail sent successfully.");
   }
 
-  public function verifyEmail($verification_token){
+  public function verifyEmail($verification_token)
+  {
       EtUsers::where('email_verification_token', $verification_token)->update(['email_verify'=>'Y']);
       return view('verify-email');
   }
@@ -140,9 +141,9 @@ class UsersController extends Controller
       $allUsers = EtUsers::where('email',$request->email)->first();
 
       if ($allUsers) {
-        return $this->sendResponse("email already exist.", 200, false);
+        return $this->sendResponse("Email already exist.", 200, false);
       }else{
-        return $this->sendResponse("email is available.");
+        return $this->sendResponse("Email is available.");
       }
   }
 
