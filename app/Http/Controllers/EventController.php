@@ -73,7 +73,11 @@ class EventController extends Controller
         $eventobj->country = $request->country;
         $eventobj->online_event = $request->online_event;
         $eventobj->description = $request->description;
-        $eventobj->platform = $request->platform;
+        if ($eventobj->platform == '') {
+            $eventobj->platform = 'N';
+        }else{
+            $eventobj->platform = $request->platform;
+        }
         $eventobj->event_link = $request->event_link;
         $eventobj->event_status = $request->event_status;
               
