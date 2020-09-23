@@ -16,15 +16,15 @@ class BroadcastController extends Controller
         //
     }
     
-    function get_coupon_data(Request $request){
+    function get_broadcast_data(Request $request){
         $this->validate($request, [
 			'unique_code'=>'required'
 			]);
-        $get_coupon_info = EtBroadcast::where(['unique_code'=>$request->unique_code])->get();
+        $get_broadcast_info = EtBroadcast::where(['unique_code'=>$request->unique_code])->get();
         
-        if(count($get_coupon_info)>0)		
+        if(count($get_broadcast_info)>0)		
         {					
-            return $this->sendResponse($get_coupon_info);			
+            return $this->sendResponse($get_broadcast_info);			
         }			
         else			
         {				
@@ -32,7 +32,7 @@ class BroadcastController extends Controller
         }
     }
 
-    function get_all_coupon_data(Request $request){
+    function get_all_broadcast_data(Request $request){
         $this->validate($request, [
 			'boxoffice_id'=>'required',
 			'search'=>'nullable'
@@ -40,16 +40,16 @@ class BroadcastController extends Controller
 
 			if($request->search !=''){
 				$search_item = $request->search;
-				$get_all_coupon_info = EtBroadcast::where('boxoffice_id',$request->boxoffice_id)->where(function($query) use ($search_item) {
-					$query->where('coupon_title', 'LIKE', '%'.$search_item.'%')
-					->orWhere('coupon_code', 'LIKE', '%'.$search_item.'%');
+				$get_all_broadcast_info = EtBroadcast::where('boxoffice_id',$request->boxoffice_id)->where(function($query) use ($search_item) {
+					$query->where('broadcast_title', 'LIKE', '%'.$search_item.'%')
+					->orWhere('broadcast_code', 'LIKE', '%'.$search_item.'%');
 					})->get();
 			}else{
-				$get_all_coupon_info = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+				$get_all_broadcast_info = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id])->get();
 			}
-        if(count($get_all_coupon_info)>0)		
+        if(count($get_all_broadcast_info)>0)		
         {					
-            return $this->sendResponse($get_all_coupon_info);			
+            return $this->sendResponse($get_all_broadcast_info);			
         }			
         else			
         {				
@@ -61,12 +61,12 @@ class BroadcastController extends Controller
 
 
 
-    public function CreateCoupon(Request $request)
+    public function CreateBroadcast(Request $request)
 	{
 		$this->validate($request, [
 			'boxoffice_id'=>'required',
-			'coupon_title'=>'required',
-			'coupon_code'=>'required',
+			'broadcast_title'=>'required',
+			'broadcast_code'=>'required',
 			'valid_from'=>'required|date|date_format:Y-m-d',
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
@@ -75,29 +75,29 @@ class BroadcastController extends Controller
 			]);
 			
         
-            $firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
+            $firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'broadcast_title'=>$request->broadcast_title,'broadcast_code'=>$request->broadcast_code])->first();
             if($firstCheck !== null)
 			{
-				return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice Id.",200,false);
+				return $this->sendResponse("System should not allow to enter duplicate Broadcast name for single Boxoffice Id.",200,false);
 			}
             $etbroadcast = new EtBroadcast;
             $time = strtotime(Carbon::now());
-			$etcoupon->unique_code = "cou".$time.rand(10,99)*rand(10,99);
-			      $etcoupon->boxoffice_id = $request->boxoffice_id;
-			      $etcoupon->coupon_title = $request->coupon_title;
-			      $etcoupon->coupon_code = $request->coupon_code;
-			      $etcoupon->valid_from = $request->valid_from;
-			      $etcoupon->max_redemption = $request->max_redemption;
-			      $etcoupon->discount_type = $request->discount_type;
-			      $etcoupon->discount = $request->discount;
-                  $etcoupon->valid_till = $request->valid_till;
+			$etbroadcast->unique_code = "cou".$time.rand(10,99)*rand(10,99);
+			      $etbroadcast->boxoffice_id = $request->boxoffice_id;
+			      $etbroadcast->broadcast_title = $request->broadcast_title;
+			      $etbroadcast->broadcast_code = $request->broadcast_code;
+			      $etbroadcast->valid_from = $request->valid_from;
+			      $etbroadcast->max_redemption = $request->max_redemption;
+			      $etbroadcast->discount_type = $request->discount_type;
+			      $etbroadcast->discount = $request->discount;
+                  $etbroadcast->valid_till = $request->valid_till;
            
             
 	
-			$result = $etcoupon->save();
+			$result = $etbroadcast->save();
 			if($result)			
 			{					
-				return $this->sendResponse("Coupon added successfully.");			
+				return $this->sendResponse("Broadcast added successfully.");			
 			}			
 			else			
 			{				
@@ -108,7 +108,7 @@ class BroadcastController extends Controller
     }
 
 
-    public function CouponDelete(Request $request)
+    public function BroadcastDelete(Request $request)
 	{
 		$this->validate($request, [
 			'unique_code'=>'required'
@@ -120,7 +120,7 @@ class BroadcastController extends Controller
 		$result = EtBroadcast::where('unique_code',$request->unique_code)->delete();		
 		if($result)
 		{
-			return $this->sendResponse("Coupon deleted sucessfully.");	
+			return $this->sendResponse("Broadcast deleted sucessfully.");	
 		}
 		else
 		{
@@ -129,13 +129,13 @@ class BroadcastController extends Controller
 	}
 
 
-	public function CouponUpdate(Request $request)
+	public function BroadcastUpdate(Request $request)
 	{
 		$this->validate($request, [			
 			'unique_code'=>'required',
 			'boxoffice_id'=>'required',
-			'coupon_title'=>'required',
-			'coupon_code'=>'required',
+			'broadcast_title'=>'required',
+			'broadcast_code'=>'required',
 			'valid_from'=>'required|date|date_format:Y-m-d',
 			'max_redemption'=>'required',
 			'discount_type'=>'required|in:P,F',
@@ -144,14 +144,14 @@ class BroadcastController extends Controller
      
 			]);
 
-$firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
+$firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'broadcast_title'=>$request->broadcast_title,'broadcast_code'=>$request->broadcast_code])->first();
       if($firstCheck !== null)
 {
-  return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice Id.",200,false);
+  return $this->sendResponse("System should not allow to enter duplicate Broadcast name for single Boxoffice Id.",200,false);
 }	
 		$result = EtBroadcast::where('unique_code',$request->unique_code)->update([
-				'coupon_title'=>$request->coupon_title,
-				'coupon_code'=>$request->coupon_code,
+				'broadcast_title'=>$request->broadcast_title,
+				'broadcast_code'=>$request->broadcast_code,
 				'valid_from'=>$request->valid_from,
 				'max_redemption'=>$request->max_redemption,
 				'discount_type'=>$request->discount_type,
@@ -160,7 +160,7 @@ $firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'coupon
 				]);
 		if(!empty($result))
 		{
-			return $this->sendResponse("Coupon updated sucessfully.");	
+			return $this->sendResponse("Broadcast updated sucessfully.");	
 		}
 		else
 		{
