@@ -95,6 +95,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
   $router->post('update-ticket',  ['uses' => 'TicketController@updateTicket']);
   $router->post('get-single-ticket',  ['uses' => 'TicketController@getSingleTicket']);
+  $router->post('delete-ticket',  ['uses' => 'TicketController@deleteEvent']);
   //end ticket APIs
 
   //get default images

@@ -6,9 +6,11 @@
     "type": "project",
     "require": {
         "php": "^7.2.5",
+        "barryvdh/laravel-dompdf": "^0.8.7",
         "guzzlehttp/guzzle": "^7.0",
         "illuminate/mail": "7.0.*",
-        "laravel/lumen-framework": "^7.0"
+        "laravel/lumen-framework": "^7.0",
+        "stripe/stripe-php": "^7.53"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",
