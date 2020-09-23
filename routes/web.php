@@ -79,12 +79,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
   //end email unique validation aman 
 
-  //start get timezones
+  //start timezone APIs
   $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
-  //end get timezones
+  //end timezone APIs
 
   //start ticket APIs
   $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
+  $router->post('update-ticket',  ['uses' => 'TicketController@updateTicket']);
+  $router->post('get-single-ticket',  ['uses' => 'TicketController@getSingleTicket']);
   //end ticket APIs
 
   //get default images

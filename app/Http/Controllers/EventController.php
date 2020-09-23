@@ -134,11 +134,11 @@ class EventController extends Controller
 
         if($result)
         {
-            return $this->sendResponse("Event Added Successfully");     
+            return $this->sendResponse("Event added successfully.");      
         }
         else
         {
-            return $this->sendResponse("Sorry! Somthing Wrong",200,false);      
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
 
