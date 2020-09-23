@@ -14,7 +14,7 @@ class TicketController extends Controller
     public function addTicket(Request $request)
     {
         $this->validate($request, [
-            'event_id'=>'required',
+            'event_id'=>'nullable',
             'ticket_name'=>'required',
             'prize'=>'required',
             'qty'=>'required',
@@ -24,24 +24,28 @@ class TicketController extends Controller
             'status'=>'required|in:OS,H,ACR,DSO,DU,OVA',
             'min_per_order'=>'required',
             'max_per_order'=>'required',
-            'hide_untill'=>'required|in:Y,N',
-            'hide_after'=>'required|in:Y,N',
-            'untill_date'=>'nullable|date|date_format:Y-m-d',
-            'untill_time'=>'nullable|date_format:H:i',
-            'after_date'=>'nullable|date|date_format:Y-m-d',
-            'after_time'=>'nullable|date_format:H:i',
+            'hide_untill'=>'nullable|in:Y,N',
+            'hide_after'=>'nullable|in:Y,N',
+            'untill_date'=>'nullable',
+            'untill_time'=>'nullable',
+            'after_date'=>'nullable',
+            'after_time'=>'nullable',
             'sold_out'=>'required|in:Y,N',
             'show_qty'=>'required|in:Y,N',
-            'discount'=>'required|in:Y,N',
+            'discount'=>'nullable',
+            'untill_interval'=>'nullable',
+            'after_interval'=>'nullable',
         ]);
         
         $time = strtotime(Carbon::now());
 
         $ticketobj = new EtTickets;
         $ticketobj->unique_code = "tck".$time.rand(10,99)*rand(10,99);
-        $ticketobj->event_id = $request->event_id;
+        if ($request->event_id != '') {
+            $ticketobj->event_id = $request->event_id;
+        }
         $ticketobj->ticket_name = $request->ticket_name;
-        if ($ticketobj->prize == null) {
+        if ($request->prize == null) {
             $ticketobj->prize = '0.00';
         }else{
             $ticketobj->prize = $request->prize;
@@ -49,7 +53,7 @@ class TicketController extends Controller
         $ticketobj->qty = $request->qty;
         $ticketobj->advance_setting = $request->advance_setting;
         $ticketobj->description = $request->description;
-        if ($ticketobj->booking_fee == null) {
+        if ($request->booking_fee == null) {
             $ticketobj->booking_fee = '0.00';
         }else{
             $ticketobj->booking_fee = $request->booking_fee;
@@ -69,17 +73,19 @@ class TicketController extends Controller
         }
         $ticketobj->sold_out = $request->sold_out;
         $ticketobj->show_qty = $request->show_qty;
-        $ticketobj->discount = $request->discount;
+        $ticketobj->discount = json_encode($request->discount);
+        $ticketobj->untill_interval = $request->untill_interval;
+        $ticketobj->after_interval = $request->after_interval;
 
         $result = $ticketobj->save();
-
+        $ticket = EtTickets::where('unique_code',$ticketobj->unique_code)->first();
         if($result)
         {
-            return $this->sendResponse("Ticket added successfully.");     
+            return $this->sendResponse($ticket);
         }
         else
         {
-            return $this->sendResponse("Sorry! Somthing wrong.",200,false);      
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false); 
         }
     }
 
@@ -96,15 +102,17 @@ class TicketController extends Controller
             'status'=>'required|in:OS,H,ACR,DSO,DU,OVA',
             'min_per_order'=>'required',
             'max_per_order'=>'required',
-            'hide_untill'=>'required|in:Y,N',
-            'hide_after'=>'required|in:Y,N',
-            'untill_date'=>'nullable|date|date_format:Y-m-d',
-            'untill_time'=>'nullable|date_format:H:i',
-            'after_date'=>'nullable|date|date_format:Y-m-d',
-            'after_time'=>'nullable|date_format:H:i',
+            'hide_untill'=>'nullable|in:Y,N',
+            'hide_after'=>'nullable|in:Y,N',
+            'untill_date'=>'nullable',
+            'untill_time'=>'nullable',
+            'after_date'=>'nullable',
+            'after_time'=>'nullable',
             'sold_out'=>'required|in:Y,N',
             'show_qty'=>'required|in:Y,N',
-            'discount'=>'required|in:Y,N',
+            'discount'=>'nullable',
+            'untill_interval'=>'nullable',
+            'after_interval'=>'nullable'
         ]);
         
         if ($request->prize == null) {
@@ -138,7 +146,9 @@ class TicketController extends Controller
                 'after_time'=>$request->after_time,
                 'sold_out'=>$request->sold_out,
                 'show_qty'=>$request->show_qty,
-                'discount'=>$request->discount
+                'discount'=>json_encode($request->discount),
+                'untill_interval'=>$request->untill_interval,
+                'after_interval'=>$request->after_interval
             ];
         }elseif ($request->hide_after == 'Y' && $request->hide_untill == 'N') {
             $update_data = [
@@ -157,7 +167,9 @@ class TicketController extends Controller
                 'after_time'=>$request->after_time,
                 'sold_out'=>$request->sold_out,
                 'show_qty'=>$request->show_qty,
-                'discount'=>$request->discount
+                'discount'=>json_encode($request->discount),
+                'untill_interval'=>$request->untill_interval,
+                'after_interval'=>$request->after_interval
             ];
         }elseif ($request->hide_after == 'N' && $request->hide_untill == 'Y') {
             $update_data = [
@@ -176,7 +188,9 @@ class TicketController extends Controller
                 'untill_time'=>$request->untill_time,
                 'sold_out'=>$request->sold_out,
                 'show_qty'=>$request->show_qty,
-                'discount'=>$request->discount
+                'discount'=>json_encode($request->discount),
+                'untill_interval'=>$request->untill_interval,
+                'after_interval'=>$request->after_interval
             ];
         }elseif ($request->hide_after == 'N' && $request->hide_untill == 'N') {
             $update_data = [
@@ -193,7 +207,9 @@ class TicketController extends Controller
                 'hide_after'=>$request->hide_after,
                 'sold_out'=>$request->sold_out,
                 'show_qty'=>$request->show_qty,
-                'discount'=>$request->discount
+                'discount'=>json_encode($request->discount),
+                'untill_interval'=>$request->untill_interval,
+                'after_interval'=>$request->after_interval
             ];
         }
         
