@@ -75,6 +75,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('delete-voucher-api',  ['uses' => 'VoucherController@VoucherDelete']);
 	$router->post('update-voucher-api',  ['uses' => 'VoucherController@VoucherUpdate']);
 
+
+	$router->post('create-broadcast-api',  ['uses' => 'BroadcastController@CreateBroadcast']);
+	$router->post('get-single-broadcast-api',  ['uses' => 'BroadcastController@get_broadcast_data']);
+	$router->post('get-all-broadcast-api',  ['uses' => 'BroadcastController@get_all_broadcast_data']);
+	$router->post('delete-broadcast-api',  ['uses' => 'BroadcastController@BroadcastDelete']);
+	$router->post('update-broadcast-api',  ['uses' => 'BroadcastController@BroadcastUpdate']);
+
+
   //start email unique validation
   $router->post('check-email',  ['uses' => 'UsersController@checkEmail']);
   //end email unique validation aman 

@@ -34,15 +34,15 @@ class BroadcastController extends Controller
 
     function get_all_broadcast_data(Request $request){
         $this->validate($request, [
-			'boxoffice_id'=>'required',
+			'event_id'=>'required',
 			'search'=>'nullable'
 			]);
 
 			if($request->search !=''){
 				$search_item = $request->search;
-				$get_all_broadcast_info = EtBroadcast::where('boxoffice_id',$request->boxoffice_id)->where(function($query) use ($search_item) {
-					$query->where('broadcast_title', 'LIKE', '%'.$search_item.'%')
-					->orWhere('broadcast_code', 'LIKE', '%'.$search_item.'%');
+				$get_all_broadcast_info = EtBroadcast::where('event_id',$request->event_id)->where(function($query) use ($search_item) {
+					$query->where('subject', 'LIKE', '%'.$search_item.'%')
+					->orWhere('message', 'LIKE', '%'.$search_item.'%');
 					})->get();
 			}else{
 				$get_all_broadcast_info = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id])->get();
@@ -64,35 +64,29 @@ class BroadcastController extends Controller
     public function CreateBroadcast(Request $request)
 	{
 		$this->validate($request, [
-			'boxoffice_id'=>'required',
-			'broadcast_title'=>'required',
-			'broadcast_code'=>'required',
-			'valid_from'=>'required|date|date_format:Y-m-d',
-			'max_redemption'=>'required',
-			'discount_type'=>'required|in:P,F',
-			'discount'=>'required',
-            'valid_till'=>'required|date|date_format:Y-m-d'
+			'event_id'=>'required',
+			'recipients'=>'required',
+			'subject'=>'required',
+			'message'=>'required',
+			'send'=>'required|in:IMM,AT_SED_DATE_TIME,AT_SED_ITR_BFO_EVT_ST,AT_SED_ITR_AFT_EVT_ND',
+			'terms'=>'required'
 			]);
 			
         
-            $firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'broadcast_title'=>$request->broadcast_title,'broadcast_code'=>$request->broadcast_code])->first();
+            $firstCheck = EtBroadcast::where(['event_id'=>$request->event_id,'subject'=>$request->subject,'message'=>$request->message])->first();
             if($firstCheck !== null)
 			{
 				return $this->sendResponse("System should not allow to enter duplicate Broadcast name for single Boxoffice Id.",200,false);
 			}
             $etbroadcast = new EtBroadcast;
             $time = strtotime(Carbon::now());
-			$etbroadcast->unique_code = "cou".$time.rand(10,99)*rand(10,99);
-			      $etbroadcast->boxoffice_id = $request->boxoffice_id;
-			      $etbroadcast->broadcast_title = $request->broadcast_title;
-			      $etbroadcast->broadcast_code = $request->broadcast_code;
-			      $etbroadcast->valid_from = $request->valid_from;
-			      $etbroadcast->max_redemption = $request->max_redemption;
-			      $etbroadcast->discount_type = $request->discount_type;
-			      $etbroadcast->discount = $request->discount;
-                  $etbroadcast->valid_till = $request->valid_till;
-           
-            
+			$etbroadcast->unique_code = "bro".$time.rand(10,99)*rand(10,99);
+			      $etbroadcast->event_id = $request->event_id;
+			      $etbroadcast->recipients = $request->recipients;
+			      $etbroadcast->subject = $request->subject;
+			      $etbroadcast->message = $request->message;
+			      $etbroadcast->send = $request->send;
+			      $etbroadcast->terms = $request->terms;
 	
 			$result = $etbroadcast->save();
 			if($result)			
@@ -133,37 +127,33 @@ class BroadcastController extends Controller
 	{
 		$this->validate($request, [			
 			'unique_code'=>'required',
-			'boxoffice_id'=>'required',
-			'broadcast_title'=>'required',
-			'broadcast_code'=>'required',
-			'valid_from'=>'required|date|date_format:Y-m-d',
-			'max_redemption'=>'required',
-			'discount_type'=>'required|in:P,F',
-			'discount'=>'required',
-            'valid_till'=>'required|date|date_format:Y-m-d'
+			'event_id'=>'required',
+			'recipients'=>'required',
+			'subject'=>'required',
+			'message'=>'required',
+			'send'=>'required|in:IMM,AT_SED_DATE_TIME,AT_SED_ITR_BFO_EVT_ST,AT_SED_ITR_AFT_EVT_ND',
+			'terms'=>'required'
      
 			]);
 
-$firstCheck = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id,'broadcast_title'=>$request->broadcast_title,'broadcast_code'=>$request->broadcast_code])->first();
-      if($firstCheck !== null)
-{
-  return $this->sendResponse("System should not allow to enter duplicate Broadcast name for single Boxoffice Id.",200,false);
-}	
+			$firstCheck = EtBroadcast::where(['event_id'=>$request->event_id,'subject'=>$request->subject,'message'=>$request->message])->first();
+            if($firstCheck !== null)
+			{
+				return $this->sendResponse("System should not allow to enter duplicate Broadcast name for single Boxoffice Id.",200,false);
+			}	
 		$result = EtBroadcast::where('unique_code',$request->unique_code)->update([
-				'broadcast_title'=>$request->broadcast_title,
-				'broadcast_code'=>$request->broadcast_code,
-				'valid_from'=>$request->valid_from,
-				'max_redemption'=>$request->max_redemption,
-				'discount_type'=>$request->discount_type,
-				'discount'=>$request->discount,
-				'valid_till'=>$request->valid_till
+				'recipients'=>$request->recipients,
+				'subject'=>$request->subject,
+				'message'=>$request->message,
+				'send'=>$request->send,
+				'terms'=>$request->terms
 				]);
 		if(!empty($result))
 		{
 			return $this->sendResponse("Broadcast updated sucessfully.");	
 		}
 		else
-		{
+		{ 
 			return $this->sendResponse("Something Went Wrong.",200,false);
 		}
   }
