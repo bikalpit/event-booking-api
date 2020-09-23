@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\EtTickets;
+use App\EtEventTicket;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 class TicketController extends Controller
@@ -240,6 +241,26 @@ class TicketController extends Controller
         else
         {
             return $this->sendResponse("Sorry! Ticket not available.",200,false);
+        }
+    }
+
+    public function deleteEvent(Request $request)
+    {
+        $this->validate($request, [
+            'unique_code'=>'required'
+        ]);
+
+        EtEventTicket::where('ticket_id',$request->unique_code)->delete();
+
+        $result = EtTickets::where('unique_code',$request->unique_code)->delete();
+
+        if($result)
+        {
+            return $this->sendResponse("Ticket deleted successfully.");
+        }
+        else
+        {
+            return $this->sendResponse("Sorry! Something wrong.",200,false);
         }
     }
 }
