@@ -89,4 +89,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
   //get default images
   $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
+
+  //strat  order confirmation api
+	$router->post('set-order-confirmation-api',  ['uses' => 'EventDetailsController@createOrderConfirmation']);
+	//end   order confirmation api
+
+	//start checkout form api
+	$router->post('set-checkout-form-api',  ['uses' => 'EventDetailsController@setCheckoutForm']);
+	//end checkout form api 
 });
