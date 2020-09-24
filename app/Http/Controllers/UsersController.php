@@ -152,4 +152,10 @@ class UsersController extends Controller
       $timezones = DB::table('et_timezone')->get();
       return $this->sendResponse($timezones);
   }
+
+  public function getLanguages(Request $request)
+  {
+      $languages = DB::table('languages')->get();
+      return $this->sendResponse($languages);
+  }
 }    

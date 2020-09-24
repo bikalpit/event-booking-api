@@ -100,4 +100,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
   //get default images
   $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
+
+  //get languages
+  $router->post('get-languages',  ['uses' => 'UsersController@getLanguages']);
 });

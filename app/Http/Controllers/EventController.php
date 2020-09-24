@@ -350,8 +350,8 @@ class EventController extends Controller
         $defaultImg = [];
         $default_images = DB::table('et_default_event_images')->get();
         foreach ($default_images as $image) {
-            $path = app()->basePath('public/event-images/');
-            $defaultImg[] = ['id'=>$image->id,'name'=>$image->name,'path'=>$path.$image->name];
+            $path = env('APP_URL');
+            $defaultImg[] = ['id'=>$image->id,'name'=>$image->name,'path'=>$path.'event-images/'.$image->name];
         }
 
         return $this->sendResponse($defaultImg);
