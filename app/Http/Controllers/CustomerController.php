@@ -151,5 +151,100 @@ class CustomerController extends Controller
 		}
 	}
 
-    //
+  public function exportCustomers(Request $request)
+  {
+      $this->validate($request, [
+          'boxoffice_id'=>'required'
+      ]);
+        
+      $result = EtCustomers::where('boxoffice_id',$request->boxoffice_id)->get();
+      if(sizeof($result)>0)
+      {
+          return $this->sendResponse($result);
+      }
+      else
+      {
+          return $this->sendResponse("No customer found.",200,false);
+      }
+  }
+
+  function csvToArray($filename = '')
+  {
+      if (!file_exists($filename) || !is_readable($filename))
+      return false;
+      //dd($filename);
+      $header = null;
+      $data = array();
+      if (($handle = fopen($filename, 'r')) !== false)
+      {
+          while (($row = fgetcsv($handle, 1000, ',')) !== false)
+          {
+              if (!$header)
+              {
+                  $header = $row;
+              }
+              else
+              {
+                  $data[] = array_combine($header, $row);
+              }
+          }
+          fclose($handle);
+      }
+
+      return $data;
+  }
+
+  public function importCustomers(Request $request)
+  {
+      $this->validate($request, [
+          'file'=>'required',
+          'boxoffice_id'=>'required'
+      ]);
+
+      $result = 0;
+      
+      $file = $request->file;
+
+      $customerArr = $this->csvToArray($file);
+
+      foreach ($customerArr as $customer) {
+
+          $time = strtotime(Carbon::now());
+
+          $unique_code = "cus".$time.rand(10,99)*rand(10,99);
+          $boxoffice_id = $request->boxoffice_id;
+          $email = $customer['email'];
+          $phone = $customer['phone'];
+          $firstname = $customer['firstname'];
+          $lastname = $customer['lastname'];
+          $email_verify = 'N';
+          $image = 'default.jpg';
+
+          $addedCustomer = EtCustomers::where(['email'=>$email,'boxoffice_id'=>$boxoffice_id])->first();
+
+          if (empty($addedCustomer)) {
+              $customer = new EtCustomers;
+                
+              $customer->unique_code = $unique_code;
+              $customer->boxoffice_id = $boxoffice_id;
+              $customer->email = $email;
+              $customer->phone = $phone;
+              $customer->firstname = $firstname;
+              $customer->lastname = $lastname;
+              $customer->email_verify = $email_verify;
+              $customer->image = $image;
+          
+              $result = $customer->save();
+          }
+      }
+      
+      if($result != 0)
+      {
+          return $this->sendResponse("Customers imported successfully.");
+      }
+      else
+      {
+          return $this->sendResponse("Something went wrong.",200,false);
+      }
+  }
 }
