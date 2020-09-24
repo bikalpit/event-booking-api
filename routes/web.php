@@ -35,24 +35,29 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('update-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeUpdate']);
 	$router->post('delete-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeDelete']);
 	$router->post('create-event-api',  ['middleware'=>'auth','uses' => 'EventController@CreateEvent']);
-	$router->post('update-event-api',  ['uses' => 'EventController@EventUpdate']);
-	$router->post('get-single-event-api',  ['uses' => 'EventController@get_single_event_data']);
-	$router->post('get-allboxoffice-event-api',  ['uses' => 'EventController@get_all_boxoffice_event_data']);
-	$router->post('delete-event-api',  ['uses' => 'EventController@EventDelete']);
+	$router->post('update-event-api',  ['middleware'=>'auth','uses' => 'EventController@EventUpdate']);
+  $router->post('update-event-status',  ['middleware'=>'auth','uses' => 'EventController@updateEventStatus']);
+	$router->post('get-single-event-api',  ['middleware'=>'auth','uses' => 'EventController@get_single_event_data']);
+	$router->post('get-allboxoffice-event-api',  ['middleware'=>'auth','uses' => 'EventController@get_all_boxoffice_event_data']);
+	$router->post('delete-event-api',  ['middleware'=>'auth','uses' => 'EventController@EventDelete']);
 	
 	
 	$router->get('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
 	$router->post('get-currancy-api',  ['uses' => 'SaleTaxController@get_all_currancy']);
 	
+  //start customer APIs
 	$router->post('create-customer-api',  ['uses' => 'CustomerController@Createcustomer']);
 	$router->post('get-single-customer-api',  ['uses' => 'CustomerController@get_single_customer_data']);
 	$router->post('get-all-customer-api',  ['uses' => 'CustomerController@get_all_customer_data']);
 	$router->post('delete-customer-api',  ['uses' => 'CustomerController@CustomerDelete']);
 	$router->post('update-customer-api',  ['uses' => 'CustomerController@CustomerUpdate']);
+  $router->post('export-customers',  ['middleware'=>'auth','uses' => 'CustomerController@exportCustomers']);
+  $router->post('import-customers',  ['middleware'=>'auth','uses' => 'CustomerController@importCustomers']);
+  //end customer APIs
 
   //start forget & reset password
-  $router->post('forget-password',  ['uses' => 'ForgetPasswordController@sendForgotEmail']);
-  $router->post('reset-password',  ['uses' => 'ForgetPasswordController@resetPassword']);
+  $router->post('forget-password',  ['middleware'=>'auth','uses' => 'ForgetPasswordController@sendForgotEmail']);
+  $router->post('reset-password',  ['middleware'=>'auth','uses' => 'ForgetPasswordController@resetPassword']);
 	//end forget & reset password
 
   //start email verification
@@ -89,21 +94,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //end email unique validation aman 
 
   //start timezone APIs
-  $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
+  $router->post('get-timezones',  ['middleware'=>'auth','uses' => 'UsersController@getTimezones']);
   //end timezone APIs
 
   //start ticket APIs
-  $router->post('add-ticket',  ['uses' => 'TicketController@addTicket']);
-  $router->post('update-ticket',  ['uses' => 'TicketController@updateTicket']);
-  $router->post('get-single-ticket',  ['uses' => 'TicketController@getSingleTicket']);
-  $router->post('delete-ticket',  ['uses' => 'TicketController@deleteEvent']);
+  $router->post('add-ticket',  ['middleware'=>'auth','uses' => 'TicketController@addTicket']);
+  $router->post('update-ticket',  ['middleware'=>'auth','uses' => 'TicketController@updateTicket']);
+  $router->post('get-single-ticket',  ['middleware'=>'auth','uses' => 'TicketController@getSingleTicket']);
+  $router->post('delete-ticket',  ['middleware'=>'auth','uses' => 'TicketController@deleteEvent']);
   //end ticket APIs
 
   //get default images
-  $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
+  $router->post('get-default-images',  ['middleware'=>'auth','uses' => 'EventController@getDefaultImages']);
 
   //get languages
-  $router->post('get-languages',  ['uses' => 'UsersController@getLanguages']);
+  $router->post('get-languages',  ['middleware'=>'auth','uses' => 'UsersController@getLanguages']);
 
   //strat  order confirmation api
 	$router->post('set-order-confirmation-api',  ['uses' => 'EventDetailsController@createOrderConfirmation']);

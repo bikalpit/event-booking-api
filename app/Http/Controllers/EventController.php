@@ -411,4 +411,23 @@ class EventController extends Controller
             return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
+
+    public function updateEventStatus(Request $request)
+    {
+        $this->validate($request, [
+            'unique_code'=>'required',
+            'event_status'=>'required|in:draft,publish'
+        ]);
+
+        $result = EtEvent::where('unique_code',$request->unique_code)->update(['event_status'=>$request->event_status]);
+
+        if($result)
+        {
+            return $this->sendResponse("Status updated successfully.");      
+        }
+        else
+        {
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
+        }
+    }
 }
