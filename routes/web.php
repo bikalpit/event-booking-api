@@ -101,10 +101,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //get default images
   $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
 
-<<<<<<< HEAD
   //get languages
   $router->post('get-languages',  ['uses' => 'UsersController@getLanguages']);
-=======
+
   //strat  order confirmation api
 	$router->post('set-order-confirmation-api',  ['uses' => 'EventDetailsController@createOrderConfirmation']);
 	//end   order confirmation api
@@ -112,5 +111,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	//start checkout form api
 	$router->post('set-checkout-form-api',  ['uses' => 'EventDetailsController@setCheckoutForm']);
 	//end checkout form api 
->>>>>>> 44bd8e26ebc56b0b0d130e93fe3b6986b42d17e1
 });
