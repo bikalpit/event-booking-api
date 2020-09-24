@@ -60,7 +60,7 @@ class CustomerController extends Controller
 			'phone'=>'required',
 			'firstname'=>'required',
 			'lastname'=>'required',
-			'email_verify'=>'required|in:Y,N',
+			'email_verify'=>'nallable|in:Y,N',
 			'image'=>'required'
 			]);
 			
