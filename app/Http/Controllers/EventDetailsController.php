@@ -23,16 +23,20 @@ class EventDetailsController extends Controller
 			'confirmation_template'=>'required'
             ]);
             
-            if($request->box_office_id == "")
+            if($request->box_office_id == "" && $request->event_id != "")
             {
                     $result = EtSettings::updateOrCreate(['event_id'=>$request->event_id,'option_key'=>"order_confirmation"],
                     ['option_value'=>$request->confirmation_template]);
-            }else
+            }else if($request->box_office_id != "" && $request->event_id == "")
             {
                 $result = EtSettings::updateOrCreate(
                     ['boxoffice_id' => $request->box_office_id, 'option_key' => 'order_confirmation'],
                     ['option_value' => $request->confirmation_template]
                 );
+            }
+            else
+            {
+                return $this->sendResponse("Something went wrong.",200,false);
             }
 
             if(!empty($result))
@@ -53,17 +57,22 @@ class EventDetailsController extends Controller
 			'form_fields'=>'required'
             ]);
             
-            $setting = json_encode($request->form_fields);
-            if($request->boxoffice_id == "")
-            {
-                $result = EtSettings::updateOrCreate(['event_id'=>$request->event_id,'option_key'=>"checkout_form"],
-                    ['option_value'=>$setting]);
-            }
-            else
-            {
-                $result = EtSettings::updateOrCreate(['boxoffice_id'=>$request->boxoffice_id,'option_key'=>"checkout_form"],
-                    ['option_value'=>$setting]);
-            }
+
+            
+                $setting = json_encode($request->form_fields);
+                if($request->boxoffice_id == "" && $request->event_id != "")
+                {
+                    $result = EtSettings::updateOrCreate(['event_id'=>$request->event_id,'option_key'=>"checkout_form"],
+                        ['option_value'=>$setting]);
+                }
+                else if($request->boxoffice_id != "" && $request->event_id == "")
+                {
+                    $result = EtSettings::updateOrCreate(['boxoffice_id'=>$request->boxoffice_id,'option_key'=>"checkout_form"],
+                        ['option_value'=>$setting]);
+                }
+                else{
+                    return $this->sendResponse("Something went wrong.",200,false);
+                }
 
             if($result)
             {
