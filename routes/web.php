@@ -58,7 +58,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //start email verification
 	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
 	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
-  $router->get('get-profile-api', ['uses' => 'UsersController@get_profile_data']);
+    $router->get('get-profile-api', ['uses' => 'UsersController@get_profile_data']);
 	//end email verification
 
 	$router->post('create-coupon-api',  ['uses' => 'CouponController@CreateCoupon']);
