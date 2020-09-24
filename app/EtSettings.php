@@ -5,8 +5,8 @@ class EtSettings extends Model
 {    
     protected $table = 'et_settings';
     protected $fillable = [
-        'unique_code',
-        'admin_id',
+        'boxoffice_id',
+        'event_id',
         'option_key',
         'option_value'
     ];    
