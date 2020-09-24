@@ -151,7 +151,7 @@ class EventController extends Controller
         }
         else
         {
-            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
+            return $this->sendResponse("Sorry! Something wrong.",200,false);     
         }
     }
 
@@ -175,17 +175,23 @@ class EventController extends Controller
     function get_all_boxoffice_event_data(Request $request)
     {
         $this->validate($request, [
-            'boxoffice_id'=>'required'
+            'boxoffice_id'=>'required',
+            'filter'=>'required|in:upcoming,past'
         ]);
-        $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->get();
         
+        if ($request->filter == 'past') {
+            $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','<=',date('Y-m-d'))->where('end_time','<=',date('H:i:s'))->get();
+        }else{
+          $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','>=',date('Y-m-d'))->where('end_time','>=',date('H:i:s'))->get();
+        }
+
         if(count($get_boxevents_info)>0)    
         {         
             return $this->sendResponse($get_boxevents_info);      
         }     
         else      
         {       
-            return $this->sendResponse("Sorry! Somthing Wrong",200,false);      
+            return $this->sendResponse("Sorry! Something Wrong",200,false);     
         }
     }
 
@@ -341,7 +347,7 @@ class EventController extends Controller
         }
         else
         {
-            return $this->sendResponse("Sorry! Somthing wrong.",200,false);
+            return $this->sendResponse("Sorry! Something wrong.",200,false);
         }
     }
 
