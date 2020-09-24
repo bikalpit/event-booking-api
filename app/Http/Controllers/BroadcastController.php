@@ -45,7 +45,7 @@ class BroadcastController extends Controller
 					->orWhere('message', 'LIKE', '%'.$search_item.'%');
 					})->get();
 			}else{
-				$get_all_broadcast_info = EtBroadcast::where(['boxoffice_id'=>$request->boxoffice_id])->get();
+				$get_all_broadcast_info = EtBroadcast::where(['event_id'=>$request->event_id])->get();
 			}
         if(count($get_all_broadcast_info)>0)		
         {					
