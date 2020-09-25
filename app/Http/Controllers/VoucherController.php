@@ -129,7 +129,7 @@ class VoucherController extends Controller
 			'voucher_value'=>'required',
 			'voucher_code'=>'required',
 			'expiry_date'=>'required|date|date_format:Y-m-d',
-			'event_id'=>'required'
+			'event_id'=>'nullable'
      
 			]);
 

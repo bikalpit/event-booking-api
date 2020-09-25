@@ -31,7 +31,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('getsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@get_saletax_data']);
 	$router->post('create-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@CreateBoxOffice']);
 	$router->post('get-single-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_single_boxoffice_data']);
-	$router->post('get-all-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_all_boxoffice_data']);
+	$router->post('get-all-boxoffice-api',  ['uses' => 'BoxOfficeController@get_all_boxoffice_data']);
 	$router->post('update-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeUpdate']);
 	$router->post('delete-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeDelete']);
 	$router->post('create-event-api',  ['middleware'=>'auth','uses' => 'EventController@CreateEvent']);
@@ -42,7 +42,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('delete-event-api',  ['middleware'=>'auth','uses' => 'EventController@EventDelete']);
 	
 	
-	$router->get('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
+	$router->post('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
 	$router->post('get-currancy-api',  ['uses' => 'SaleTaxController@get_all_currancy']);
 	
   //start customer APIs
@@ -94,7 +94,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //end email unique validation aman 
 
   //start timezone APIs
-  $router->post('get-timezones',  ['middleware'=>'auth','uses' => 'UsersController@getTimezones']);
+  $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
   //end timezone APIs
 
   //start ticket APIs
@@ -105,10 +105,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //end ticket APIs
 
   //get default images
-  $router->post('get-default-images',  ['middleware'=>'auth','uses' => 'EventController@getDefaultImages']);
+  $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
 
   //get languages
-  $router->post('get-languages',  ['middleware'=>'auth','uses' => 'UsersController@getLanguages']);
+  $router->post('get-languages',  ['uses' => 'UsersController@getLanguages']);
 
   //strat  order confirmation api
 	$router->post('set-order-confirmation-api',  ['uses' => 'EventDetailsController@createOrderConfirmation']);
@@ -117,4 +117,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	//start checkout form api
 	$router->post('set-checkout-form-api',  ['uses' => 'EventDetailsController@setCheckoutForm']);
 	//end checkout form api 
+
+  //get timeslots
+  $router->post('get-timeslots',  ['uses' => 'EventController@getTimeslots']);
 });
