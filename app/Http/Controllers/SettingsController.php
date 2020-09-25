@@ -32,6 +32,26 @@ class SettingsController extends Controller
             return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
+	public function getAllOptionsValue(Request $request)
+    {
+        $getalloption = [];
+        $getoptions = EtSettings::all();
+        foreach ($getoptions as $getoption) {
+            $getalloption[] = ['id'=>$getoption->id,
+            'boxoffice_id'=>$getoption->boxoffice_id,
+            'event_id'=>$getoption->event_id,
+            'option_key'=>$getoption->option_key,
+            'option_value'=>$getoption->option_value,
+            'created_at'=>$getoption->created_at,
+            'updated_at'=>$getoption->updated_at
+            ];
+        }                
+        if($getalloption) {
+            return $this->sendResponse($getalloption);      
+        }else{
+            return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
+        }
+    }
 
    
 }
