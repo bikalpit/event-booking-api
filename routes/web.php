@@ -120,4 +120,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
   //get timeslots
   $router->post('get-timeslots',  ['uses' => 'EventController@getTimeslots']);
+  
+  //start get setting option  api
+	$router->post('get-setting-option-api',  ['uses' => 'SettingsController@getOptionValue']);
+	//end get setting option api 
 });
