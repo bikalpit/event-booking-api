@@ -189,14 +189,22 @@ class UsersController extends Controller
     			'image'=> 'nullable',
 			]);
 
-		
+    
+      
+      if($request->image)
+      {
+          $path = app()->basePath('public/user-images/');
+          $fileName_image = $this->singleImageUpload($path, $request->image);
+         
+      }
+
 		$result = EtUsers::where('unique_code',$request->unique_code)->update([
 				'firstname'=>$request->firstname,
 				'email'=>$request->email,
 				'description'=>$request->description,
 				'phone'=>$request->phone,
 				'zipcode'=>$request->zipcode,
-				'image'=>$request->image
+				'image'=>$fileName_image
 				]);
 		if(!empty($result))
 		{
