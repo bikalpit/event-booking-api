@@ -94,7 +94,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //end email unique validation aman 
 
   //start timezone APIs
-  $router->post('get-timezones',  ['middleware'=>'auth','uses' => 'UsersController@getTimezones']);
+  $router->post('get-timezones',  ['uses' => 'UsersController@getTimezones']);
   //end timezone APIs
 
   //start ticket APIs
@@ -105,10 +105,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //end ticket APIs
 
   //get default images
-  $router->post('get-default-images',  ['middleware'=>'auth','uses' => 'EventController@getDefaultImages']);
+  $router->post('get-default-images',  ['uses' => 'EventController@getDefaultImages']);
 
   //get languages
-  $router->post('get-languages',  ['middleware'=>'auth','uses' => 'UsersController@getLanguages']);
+  $router->post('get-languages',  ['uses' => 'UsersController@getLanguages']);
 
   //strat  order confirmation api
 	$router->post('set-order-confirmation-api',  ['uses' => 'EventDetailsController@createOrderConfirmation']);
