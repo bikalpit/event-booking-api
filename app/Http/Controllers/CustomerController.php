@@ -126,7 +126,6 @@ class CustomerController extends Controller
 			'phone'=>'required',
 			'firstname'=>'required',
 			'lastname'=>'required',
-			'email_verify'=>'required|in:Y,N',
 			'image'=>'required'
 			]);
 
@@ -138,7 +137,6 @@ class CustomerController extends Controller
 				'phone'=>$request->phone,
 				'firstname'=>$request->firstname,
 				'lastname'=>$request->lastname,
-				'email_verify'=>$request->email_verify,
 				'image'=>$request->image
 				]);
 		if(!empty($result))
