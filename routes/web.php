@@ -120,4 +120,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
   //get timeslots
   $router->post('get-timeslots',  ['uses' => 'EventController@getTimeslots']);
+
+  //start order API
+  $router->post('create-order',  ['uses' => 'OrderController@createOrder']);
+  $router->post('get-single-order',  ['uses' => 'OrderController@getSingleOrder']);
+  $router->post('cancel-order',  ['uses' => 'OrderController@cancelOrder']);
 });
