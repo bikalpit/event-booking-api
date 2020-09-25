@@ -87,27 +87,25 @@ class EventController extends Controller
         if($request->image)
         {
             $path = app()->basePath('public/event-images/');
-            $fileName = $this->imageUpload($path, $request->image);
-            foreach ($fileName as $file) {
-                $eventimg = new EtEventImage;
-                $eventimg->unique_code = $eventobj->unique_code;
-                $eventimg->event_id = $eventobj->id;
-                $eventimg->image = $file;
-                
-                $save_eventimg = $eventimg->save();
-            }
+            $fileName = $this->singleImageUpload($path, $request->image);
+            
+            $eventimg = new EtEventImage;
+
+            $eventimg->unique_code = $eventobj->unique_code;
+            $eventimg->event_id = $eventobj->id;
+            $eventimg->image = $fileName;
+            
+            $save_eventimg = $eventimg->save();
         }
 
         if($request->default_img)
         {
-            foreach ($request->default_img as $file) {
-                $eventimg = new EtEventImage;
-                $eventimg->unique_code = $eventobj->unique_code;
-                $eventimg->event_id = $eventobj->id;
-                $eventimg->image = $file;
-                
-                $save_eventimg = $eventimg->save();
-            }
+            $eventimg = new EtEventImage;
+            $eventimg->unique_code = $eventobj->unique_code;
+            $eventimg->event_id = $eventobj->id;
+            $eventimg->image = $request->default_img;
+            
+            $save_eventimg = $eventimg->save();
         }
 
         $eventsettingobj = new EtEventSetting;
@@ -284,27 +282,26 @@ class EventController extends Controller
         if($request->image)
         {
             $path = app()->basePath('public/event-images/');
-            $fileName = $this->imageUpload($path, $request->image);
-            foreach ($fileName as $file) {
-                $eventimg = new EtEventImage;
-                $eventimg->unique_code = $request->unique_code;
-                $eventimg->event_id = $Event->id;
-                $eventimg->image = $file;
-                
-                $save_eventimg = $eventimg->save();
-            }
+            $fileName = $this->singleImageUpload($path, $request->image);
+
+            $eventimg = new EtEventImage;
+
+            $eventimg->unique_code = $request->unique_code;
+            $eventimg->event_id = $Event->id;
+            $eventimg->image = $fileName;
+            
+            $save_eventimg = $eventimg->save();
         }
 
         if($request->default_img)
         {
-            foreach ($request->default_img as $file) {
-                $eventimg = new EtEventImage;
-                $eventimg->unique_code = $eventobj->unique_code;
-                $eventimg->event_id = $eventobj->id;
-                $eventimg->image = $file;
-                
-                $save_eventimg = $eventimg->save();
-            }
+            $eventimg = new EtEventImage;
+            
+            $eventimg->unique_code = $eventobj->unique_code;
+            $eventimg->event_id = $eventobj->id;
+            $eventimg->image = $request->default_img;
+            
+            $save_eventimg = $eventimg->save();
         }
 
         if ($request->donation_amt == null) {
