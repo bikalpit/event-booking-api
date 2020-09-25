@@ -159,10 +159,13 @@ class UsersController extends Controller
       return $this->sendResponse($languages);
   }
 
-  function get_profile_data(Request $request){
-    $this->validate($request, [
-  'unique_code'=>'required'
-  ]);
+
+
+    function get_profile_data(Request $request){
+      $this->validate($request, [
+    'unique_code'=>'required'
+    ]);
+
     $get_profile_info = EtUsers::where(['unique_code'=>$request->unique_code])->get();
     
     if(count($get_profile_info)>0)		

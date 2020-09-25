@@ -31,7 +31,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('getsaltetax-api',  ['middleware'=>'auth','uses' => 'SaleTaxController@get_saletax_data']);
 	$router->post('create-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@CreateBoxOffice']);
 	$router->post('get-single-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_single_boxoffice_data']);
-	$router->post('get-all-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@get_all_boxoffice_data']);
+	$router->post('get-all-boxoffice-api',  ['uses' => 'BoxOfficeController@get_all_boxoffice_data']);
 	$router->post('update-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeUpdate']);
 	$router->post('delete-boxoffice-api',  ['middleware'=>'auth','uses' => 'BoxOfficeController@BoxOfficeDelete']);
 	$router->post('create-event-api',  ['middleware'=>'auth','uses' => 'EventController@CreateEvent']);
@@ -42,7 +42,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('delete-event-api',  ['middleware'=>'auth','uses' => 'EventController@EventDelete']);
 	
 	
-	$router->get('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
+	$router->post('get-country-api',  ['uses' => 'SaleTaxController@get_all_country']);
 	$router->post('get-currancy-api',  ['uses' => 'SaleTaxController@get_all_currancy']);
 	
   //start customer APIs
