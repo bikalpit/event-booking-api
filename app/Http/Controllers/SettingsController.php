@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers;
-use App\EtSettings;
+
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
+use App\EtSettings;
 class SettingsController extends Controller
 {
     public function __construct()
@@ -24,7 +25,7 @@ class SettingsController extends Controller
         }else{
             $result = EtSettings::where(['option_key' =>$request->option_key,'event_id'=>$request->event_id])->whereNull('boxoffice_id')->first();
         }
-                
+           var_dump($result);     
         if($result) {
             return $this->sendResponse($result->option_value);      
         }else{
