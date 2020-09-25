@@ -117,4 +117,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	//start checkout form api
 	$router->post('set-checkout-form-api',  ['uses' => 'EventDetailsController@setCheckoutForm']);
 	//end checkout form api 
+
+  //get timeslots
+  $router->post('get-timeslots',  ['uses' => 'EventController@getTimeslots']);
 });

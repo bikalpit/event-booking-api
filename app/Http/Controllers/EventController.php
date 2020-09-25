@@ -430,4 +430,23 @@ class EventController extends Controller
             return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
+
+    public function getTimeslots(Request $request)
+    {
+        $this->validate($request, [
+            'interval'=>'required',
+        ]);
+
+        $minDiff = $request->interval*60;
+
+        $open_time = strtotime("00:00");
+        $close_time = strtotime("23:59");
+
+        $output = [];
+        for( $i=$open_time; $i<$close_time; $i+=$minDiff) {
+            $output[] = date("H:i", $i);
+        };
+
+        return $this->sendResponse($output); 
+    }
 }
