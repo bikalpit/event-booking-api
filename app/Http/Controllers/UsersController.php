@@ -177,4 +177,43 @@ class UsersController extends Controller
         return $this->sendResponse("Sorry! Somthing Wrong",200,false);			
     }
   }   
+  public function update_profile_data(Request $request)
+	{
+		$this->validate($request, [			
+			    'unique_code' => 'required',
+			    'firstname' => 'required',
+    			'email' => 'required|email|unique:et_users',
+    			'description' => 'nullable',
+    			'phone'  => 'required|numeric',
+    			'zipcode'=> 'required|min:5|max:6',
+    			'image'=> 'nullable',
+			]);
+
+    
+      
+      if($request->image)
+      {
+          $path = app()->basePath('public/user-images/');
+          $fileName_image = $this->singleImageUpload($path, $request->image);
+         
+      }
+
+		$result = EtUsers::where('unique_code',$request->unique_code)->update([
+				'firstname'=>$request->firstname,
+				'email'=>$request->email,
+				'description'=>$request->description,
+				'phone'=>$request->phone,
+				'zipcode'=>$request->zipcode,
+				'image'=>$fileName_image
+				]);
+		if(!empty($result))
+		{
+			return $this->sendResponse("Profile updated sucessfully.");	
+		}
+		else
+		{
+			return $this->sendResponse("Something Went Wrong.",200,false);
+		}
+	}
+
 } 

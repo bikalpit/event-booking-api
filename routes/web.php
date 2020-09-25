@@ -63,8 +63,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //start email verification
 	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
 	$router->post('send-verification-email',  ['uses' => 'UsersController@sendVerificationEmail']);
-    $router->get('get-profile-api', ['uses' => 'UsersController@get_profile_data']);
-	//end email verification
+    $router->post('get-profile-api', ['uses' => 'UsersController@get_profile_data']);
+    $router->post('update-profile-api', ['uses' => 'UsersController@update_profile_data']);
+	//end email verification 
 
 	$router->post('create-coupon-api',  ['uses' => 'CouponController@CreateCoupon']);
 	$router->post('get-single-coupon-api',  ['uses' => 'CouponController@get_coupon_data']);
@@ -125,4 +126,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->post('create-order',  ['uses' => 'OrderController@createOrder']);
   $router->post('get-single-order',  ['uses' => 'OrderController@getSingleOrder']);
   $router->post('cancel-order',  ['uses' => 'OrderController@cancelOrder']);
+  
+  //start get setting option  api
+	$router->post('get-setting-option-api',  ['uses' => 'SettingsController@getOptionValue']);
+	//end get setting option api 
+	
+	//start get setting option  api
+	$router->post('get-all-setting-option-api',  ['uses' => 'SettingsController@getAllOptionsValue']);
+	//end get setting option api 
 });
