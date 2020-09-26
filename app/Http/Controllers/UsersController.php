@@ -185,8 +185,7 @@ class UsersController extends Controller
     			'email' => 'required|email|unique:et_users',
     			'description' => 'nullable',
     			'phone'  => 'required|numeric',
-    			'zipcode'=> 'required|min:5|max:6',
-    			'image'=> 'nullable',
+    			'image'=> 'nullable'
 			]);
 
     
@@ -203,7 +202,6 @@ class UsersController extends Controller
 				'email'=>$request->email,
 				'description'=>$request->description,
 				'phone'=>$request->phone,
-				'zipcode'=>$request->zipcode,
 				'image'=>$fileName_image
 				]);
 		if(!empty($result))
