@@ -5,6 +5,8 @@ use App\EtEvent;
 use App\EtEventSetting;
 use App\EtEventTicket;
 use App\EtEventImage;
+use App\EtTickets;
+use App\EtEventTicketRevenue;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
@@ -140,6 +142,19 @@ class EventController extends Controller
                 $event_ticket->event_id = $eventobj->unique_code;
                 $event_ticket->ticket_id = $ticket;
                 $save_event_ticket = $event_ticket->save();
+
+                $ticket_info = EtTickets::where('unique_code',$ticket)->first();
+
+                if ($ticket_info) {
+                    $ticket_revenue = new EtEventTicketRevenue;
+                    $ticket_revenue->event_id = $eventobj->unique_code;
+                    $ticket_revenue->ticket_id = $ticket;
+                    $ticket_revenue->sold = '0';
+                    $ticket_revenue->remaining = $ticket_info->qty;
+                    $ticket_revenue->ticket_amt = $ticket_info->prize;
+                    $ticket_revenue->revenue = '0.00';
+                    $event_ticket_revenue = $ticket_revenue->save();
+                }
             }
         }
 
@@ -178,9 +193,9 @@ class EventController extends Controller
         ]);
         
         if ($request->filter == 'past') {
-            $all_event = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','<=',date('Y-m-d'))->where('end_time','<=',date('H:i:s'))->get();
+            $all_event = EtEvent::with('revenue')->where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','<=',date('Y-m-d'))->where('end_time','<=',date('H:i:s'))->get();
         }else{
-            $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','>=',date('Y-m-d'))->get();
+            $get_boxevents_info = EtEvent::with('revenue')->where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','>=',date('Y-m-d'))->get();
             foreach ($get_boxevents_info as $event) {
                 if ($event->end_date == date('Y-m-d')) {
                     if ($event->end_time >= date('H:i:s')) {
@@ -198,7 +213,7 @@ class EventController extends Controller
         }     
         else      
         {       
-            return $this->sendResponse("Sorry! Something Wrong",200,false);     
+            return $this->sendResponse("Sorry! Event not found.",200,false);      
         }
     }
 

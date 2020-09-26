@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\EtOrders;
 use App\EtCustomers;
 use App\EtPayment;
+use App\EtEventTicketRevenue;
+use App\EtTickets;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 class OrderController extends Controller
@@ -82,19 +84,33 @@ class OrderController extends Controller
 
         $result = $orderobj->save();
 
-        $paymentobj = new EtPayment;
+        if ($result) {
 
-        $paymentobj->order_id = $orderobj->unique_code;
-        $paymentobj->payment_status = $request->payment_status;
-        $paymentobj->amount = $request->grand_total;
-        $paymentobj->payment_method = $request->payment_method;
-        //$paymentobj->transaction_id = '';
-        $paymentobj->event_id = $request->event_id;
-        $paymentobj->boxoffice_id = $request->boxoffice_id;
-        $paymentobj->customer_id = $customer_id;
+            $paymentobj = new EtPayment;
 
-        $payment = $paymentobj->save();
+            $paymentobj->order_id = $orderobj->unique_code;
+            $paymentobj->payment_status = $request->payment_status;
+            $paymentobj->amount = $request->grand_total;
+            $paymentobj->payment_method = $request->payment_method;
+            //$paymentobj->transaction_id = '';
+            $paymentobj->event_id = $request->event_id;
+            $paymentobj->boxoffice_id = $request->boxoffice_id;
+            $paymentobj->customer_id = $customer_id;
 
+            $payment = $paymentobj->save();
+
+            $ticket = EtTickets::where('unique_code',$request->ticket_id)->first();
+
+            $revenue_info = EtEventTicketRevenue::where(['event_id'=>$request->event_id,'ticket_id'=>$request->ticket_id])->first();
+
+            $sold = $revenue_info->sold+$request->qty;
+            $remaining = $revenue_info->remaining-$request->qty;
+            $prize = $ticket->prize*$request->qty;
+            $revenue = $revenue_info->revenue+$prize;
+
+            $revenue = EtEventTicketRevenue::where(['event_id'=>$request->event_id,'ticket_id'=>$request->ticket_id])->update(['sold'=>$sold,'remaining'=>$remaining,'revenue'=>$revenue]);
+        }
+            
         if($result)
         {
             return $this->sendResponse("Order created successfully.");
@@ -138,6 +154,24 @@ class OrderController extends Controller
         else
         {
             return $this->sendResponse("Sorry! Something wrong.",200,false);
+        }
+    }
+
+    public function getAllOrder(Request $request)
+    {
+        $this->validate($request, [
+            'boxoffice_id'=>'required'
+        ]);
+
+        $result = EtOrders::where('boxoffice_id',$request->boxoffice_id)->get();
+
+        if($result)
+        {
+            return $this->sendResponse($result);
+        }
+        else
+        {
+            return $this->sendResponse("Sorry! Order not found.",200,false);
         }
     }
 }

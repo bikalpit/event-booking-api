@@ -26,4 +26,9 @@ class EtEvent extends Model
     {
       return $this->belongsToMany('App\EtTickets', 'et_event_ticket', 'event_id', 'ticket_id');
     }
+
+    public function revenue()
+    {
+      return $this->hasMany('App\EtEventTicketRevenue', 'unique_code', 'event_id');
+    }
 }
