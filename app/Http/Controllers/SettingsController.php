@@ -20,14 +20,16 @@ class SettingsController extends Controller
             'option_key'=>'required',
         ]);
         
-        if(!empty($request->boxoffice_id) && $request->event_id == ''){
+        if(!empty($request->boxoffice_id) && strtolower($request->event_id) == "null"){
             $result = EtSettings::where(['option_key' =>$request->option_key,'boxoffice_id'=>$request->boxoffice_id])->whereNull('event_id')->first();
-        }else{
+        }else if(!empty($request->event_id) && strtolower($request->boxoffice_id) == "null"){
             $result = EtSettings::where(['option_key' =>$request->option_key,'event_id'=>$request->event_id])->whereNull('boxoffice_id')->first();
         }
-              
-        if($result) {
+                
+        if(!empty($result)){
             return $this->sendResponse($result->option_value);      
+        }else if(empty($result)){
+            return $this->sendResponse("Not Any Match Found.");   
         }else{
             return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
@@ -46,12 +48,70 @@ class SettingsController extends Controller
             'updated_at'=>$getoption->updated_at
             ];
         }                
-        if($getalloption) {
+        if(!empty($getalloption)) {
             return $this->sendResponse($getalloption);      
+        }else if(empty($getalloption)){
+            return $this->sendResponse("No Data Found.");      
         }else{
             return $this->sendResponse("Sorry! Somthing wrong.",200,false);     
         }
     }
+	
+	 public function setOptionValue(Request $request){
+        $this->validate($request, [
+            'event_id'=>'required',
+            'boxoffice_id'=>'required',
+            'json_type'=>'required',
+            'option_key'=>'required',
+            'option_value'=>'required',
+        ]);  
+        
+        if(strtolower($request->json_type) == "y"){
+
+            if(!empty($request->boxoffice_id) && strtolower($request->event_id) == "null"){
+               $setting = EtSettings::updateOrCreate(
+                    ['boxoffice_id' => $request->boxoffice_id,
+                    'option_key' => $request->option_key],
+                    ['option_key' => $request->option_key,
+                    'option_value'  => json_encode($request->option_value),
+                ]);
+               
+            }else if(!empty($request->event_id) && strtolower($request->boxoffice_id) == "null"){
+                $setting = EtSettings::updateOrCreate(
+                    ['event_id' => $request->event_id,
+                    'option_key' => $request->option_key],
+                    ['option_key' => $request->option_key,
+                    'option_value'  => json_encode($request->option_value),
+                ]);
+                
+            }
+
+        }else if(strtolower($request->json_type) == "n"){
+        
+            if(!empty($request->boxoffice_id) && strtolower($request->event_id) == "null"){
+                $setting = EtSettings::updateOrCreate(
+                    ['boxoffice_id' => $request->boxoffice_id,
+                    'option_key' => $request->option_key],
+                    ['option_key' => $request->option_key,
+                    'option_value'  => $request->option_value,
+                ]);
+            }else if(!empty($request->event_id) && strtolower($request->boxoffice_id) == "null"){
+                $setting = EtSettings::updateOrCreate(
+                    ['event_id' => $request->event_id,
+                    'option_key' => $request->option_key],
+                    ['option_key' => $request->option_key,
+                    'option_value'  => $request->option_value,
+                ]);
+            }
+        }
+        if(!empty($setting)){
+            return $this->sendResponse("Option Set Sucessfully.");
+        }else{
+             return $this->sendResponse("Sorry! Somthing wrong.",200,false);
+        }
+        
+    }
+
 
    
 }
