@@ -59,9 +59,7 @@ class SettingsController extends Controller
 	
 	 public function setOptionValue(Request $request){
 		 
-		 var_dump($request);die;
-		 
-        $this->validate($request, [
+		$this->validate($request, [
             'event_id'=>'required',
             'boxoffice_id'=>'required',
             'json_type'=>'required',
