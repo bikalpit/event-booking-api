@@ -134,4 +134,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	//start get setting option  api
 	$router->post('get-all-setting-option-api',  ['uses' => 'SettingsController@getAllOptionsValue']);
 	//end get setting option api 
+	
+	//start set setting option  api
+	
+	$router->post('set-setting-option-api',  ['uses' => 'SettingsController@setOptionValue']);
+	//end set setting option api 
 });
