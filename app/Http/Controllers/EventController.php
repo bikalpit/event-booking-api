@@ -178,14 +178,23 @@ class EventController extends Controller
         ]);
         
         if ($request->filter == 'past') {
-            $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','<=',date('Y-m-d'))->where('end_time','<=',date('H:i:s'))->get();
+            $all_event = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','<=',date('Y-m-d'))->where('end_time','<=',date('H:i:s'))->get();
         }else{
-          $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','>=',date('Y-m-d'))->where('end_time','>=',date('H:i:s'))->get();
+            $get_boxevents_info = EtEvent::where(['boxoffice_id'=>$request->boxoffice_id])->where('end_date','>=',date('Y-m-d'))->get();
+            foreach ($get_boxevents_info as $event) {
+                if ($event->end_date == date('Y-m-d')) {
+                    if ($event->end_time >= date('H:i:s')) {
+                        $all_event[] = $event;
+                    }
+                }else{
+                    $all_event[] = $event;
+                }
+            }
         }
 
-        if(count($get_boxevents_info)>0)    
+        if(count($all_event)>0)   
         {         
-            return $this->sendResponse($get_boxevents_info);      
+            return $this->sendResponse($all_event);     
         }     
         else      
         {       
