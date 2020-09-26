@@ -125,7 +125,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   //start order API
   $router->post('create-order',  ['uses' => 'OrderController@createOrder']);
   $router->post('get-single-order',  ['uses' => 'OrderController@getSingleOrder']);
+  $router->post('get-all-order',  ['uses' => 'OrderController@getAllOrder']);
   $router->post('cancel-order',  ['uses' => 'OrderController@cancelOrder']);
+  //end order API
   
   //start get setting option  api
 	$router->post('get-setting-option-api',  ['uses' => 'SettingsController@getOptionValue']);
