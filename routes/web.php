@@ -131,7 +131,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('get-setting-option-api',  ['uses' => 'SettingsController@getOptionValue']);
 	//end get setting option api 
 	
-	//start get setting option  api
-	$router->post('get-all-setting-option-api',  ['uses' => 'SettingsController@getAllOptionsValue']);
+	//Inviter APIS
+	$router->post('request-inviter-api',  ['uses' => 'InviterController@Createinviters']);
+	$router->post('all-requested-inviter-api',  ['uses' => 'InviterController@get_inviters_data']);
+	$router->post('delete-request-inviter-api',  ['uses' => 'InviterController@InviterDelete']);
 	//end get setting option api 
+
+
+
+
 });
