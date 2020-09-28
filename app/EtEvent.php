@@ -29,6 +29,6 @@ class EtEvent extends Model
 
     public function revenue()
     {
-      return $this->hasMany('App\EtEventTicketRevenue', 'unique_code', 'event_id');
+      return $this->hasMany('App\EtEventTicketRevenue', 'event_id', 'unique_code');
     }
 }
