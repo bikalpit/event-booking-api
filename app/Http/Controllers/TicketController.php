@@ -16,6 +16,7 @@ class TicketController extends Controller
     {
         $this->validate($request, [
             'event_id'=>'nullable',
+            'box_office_id'=>'required',
             'ticket_name'=>'required',
             'prize'=>'required',
             'qty'=>'required',
@@ -42,6 +43,7 @@ class TicketController extends Controller
 
         $ticketobj = new EtTickets;
         $ticketobj->unique_code = "tck".$time.rand(10,99)*rand(10,99);
+        $ticketobj->box_office_id = $request->box_office_id;
         if ($request->event_id != '') {
             $ticketobj->event_id = $request->event_id;
         }
@@ -261,6 +263,23 @@ class TicketController extends Controller
         else
         {
             return $this->sendResponse("Sorry! Something wrong.",200,false);
+        }
+    }
+
+    public function getAllTicket(Request $request)
+    {
+        $this->validate($request, [
+            'box_office_id'=>'required'
+        ]);
+
+        $allTickets = EtTickets::where('box_office_id',$request->box_office_id)->get();
+        if(sizeof($allTickets)>0)
+        {
+            return $this->sendResponse($allTickets);
+        }
+        else
+        {
+            return $this->sendResponse("Tickets not found.",200,false);
         }
     }
 }

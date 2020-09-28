@@ -104,6 +104,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->post('add-ticket',  ['middleware'=>'auth','uses' => 'TicketController@addTicket']);
   $router->post('update-ticket',  ['middleware'=>'auth','uses' => 'TicketController@updateTicket']);
   $router->post('get-single-ticket',  ['middleware'=>'auth','uses' => 'TicketController@getSingleTicket']);
+  $router->post('get-all-ticket',  ['middleware'=>'auth','uses' => 'TicketController@getAllTicket']);
   $router->post('delete-ticket',  ['middleware'=>'auth','uses' => 'TicketController@deleteEvent']);
   //end ticket APIs
 
