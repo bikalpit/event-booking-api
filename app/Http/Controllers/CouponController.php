@@ -144,20 +144,27 @@ class CouponController extends Controller
      
 			]);
 
-$firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title,'coupon_code'=>$request->coupon_code])->first();
-      if($firstCheck !== null)
-{
-  return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice Id.",200,false);
-}	
-		$result = EtCoupon::where('unique_code',$request->unique_code)->update([
-				'coupon_title'=>$request->coupon_title,
-				'coupon_code'=>$request->coupon_code,
-				'valid_from'=>$request->valid_from,
-				'max_redemption'=>$request->max_redemption,
-				'discount_type'=>$request->discount_type,
-				'discount'=>$request->discount,
-				'valid_till'=>$request->valid_till
-				]);
+			$getCoupon = EtCoupon::where('unique_code',$request->unique_code)->first();
+			if(!empty($getCoupon))
+			{
+				if($request->coupon_title !== $getCoupon->coupon_title)
+				{
+					$firstCheck = EtCoupon::where(['boxoffice_id'=>$request->boxoffice_id,'coupon_title'=>$request->coupon_title])->first();
+					if($firstCheck !== null)
+					{		
+						return $this->sendResponse("System should not allow to enter duplicate Coupon name for single Boxoffice.",200,false);
+					}
+				}
+			}
+					$result = EtCoupon::where('unique_code',$request->unique_code)->update([
+							'coupon_title'=>$request->coupon_title,
+							'coupon_code'=>$request->coupon_code,
+							'valid_from'=>$request->valid_from,
+							'max_redemption'=>$request->max_redemption,
+							'discount_type'=>$request->discount_type,
+							'discount'=>$request->discount,
+							'valid_till'=>$request->valid_till
+							]);
 		if(!empty($result))
 		{
 			return $this->sendResponse("Coupon updated sucessfully.");	
