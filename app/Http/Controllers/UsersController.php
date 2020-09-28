@@ -212,6 +212,24 @@ class UsersController extends Controller
 		{
 			return $this->sendResponse("Something Went Wrong.",200,false);
 		}
-	}
+  }
+  public function checkToken(Request $request)
+  {
+		$this->validate($request, [
+			'user_id'=>'required',
+			'user_type'=>'required|in:SA,A,EO,OM',
+			'token'=>'required'
+		]);
+
+	  	$result = Api_auth::where(['user_id'=>$request->user_id,'user_type'=>$request->user_type,'token'=>$request->token])->first();
+		if($result === null)
+		{
+			return $this->sendResponse("token not match.",200,false);
+		}
+		else
+		{
+			return $this->sendResponse("token match success.");
+		}
+	} 
 
 } 
