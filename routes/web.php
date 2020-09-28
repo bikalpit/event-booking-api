@@ -23,6 +23,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('signup',  ['uses' => 'UsersController@adminSignup']);
 	$router->post('login',  ['uses' => 'UsersController@isLogin']);
 	$router->post('check-token',  ['uses' => 'UsersController@checkToken']);
+	$router->post('user-re-login',  ['uses' => 'UsersController@userReLogin']);
   //end admin login and signup routes
 
   //$router->post('logout',  ['uses' => 'LogoutController@isLogout']);

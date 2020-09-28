@@ -230,6 +230,52 @@ class UsersController extends Controller
 		{
 			return $this->sendResponse("token match success.");
 		}
-	} 
+  } 
+  public function userReLogin(Request $request)
+	{
+		$this->validate($request, [
+			'user_id'=>'required',
+			'user_type'=>'required|in:SA,A,EO,OM',
+			'password'=>'required'
+		  ]);
+
+      $user = EtUsers::where(['unique_code' => $request->user_id])->first();
+		  if(isset($user))
+      {
+    			if(Hash::check($request->password, $user->password))
+    			{
+      				if($user->email_verify == 'N')
+      				{
+      					 return $this->sendResponse("User is not verified", 200, false);
+      				}
+      				if($user->status == 'N')
+      				{
+      					 return $this->sendResponse("User is not enable", 200, false);
+      				}
+
+      				$token_string = hash("sha256", rand());  
+      				$authentication = Api_auth::updateOrCreate(['user_id' => $user->unique_code],[
+        					'user_id' => $user->unique_code,
+        					'token' => $token_string,
+        					'user_type' => $user->role,
+              ]);
+
+              $authentication['firstname'] = $user->firstname;
+              $authentication['lastname'] = $user->lastname;
+              $authentication['email']   = $user->email;
+              $authentication['phone'] = $user->phone;
+              $authentication['image'] = $user->image;
+
+				      return $this->sendResponse($authentication);
+			    } 
+			    else 
+			    {						 
+    				  return $this->sendResponse("user_id or password is wrong.", 200, false);
+    			}
+
+    	} 
+      return $this->sendResponse("user_id or password is wrong.", 200, false);
+		 
+	}
 
 } 
