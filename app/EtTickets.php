@@ -6,6 +6,7 @@ class EtTickets extends Model
     protected $table = 'et_tickets';
     protected $fillable = [
         'unique_code',
+        'box_office_id',
         'event_id',
         'ticket_name',
         'prize',
