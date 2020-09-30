@@ -259,9 +259,9 @@ class OrderController extends Controller
             // $result = EtOrders::with(['customer'])->where(['boxoffice_id'=> $request->boxoffice_id])->get();
         }
         
-        if(!empty($result)){
+        if(!$result->isEmpty()){
             return $this->sendResponse($result);
-        }else if(empty($result)){
+        }else if($result->isEmpty()){
             return $this->sendResponse("Sorry! Order not found.",200,false);
         }else{
             return $this->sendResponse("Sorry! Something wrong.",200,false);
