@@ -160,18 +160,111 @@ class OrderController extends Controller
     public function getAllOrder(Request $request)
     {
         $this->validate($request, [
-            'boxoffice_id'=>'required'
+            'boxoffice_id'=>'required',
+            'global_search' => 'nullable',
+            'event_id' => 'required',
+            'order_fromdate' => 'nullable',
+            'order_todate' => 'nullable',
+            'order_status' => 'required|in:all,CO,P,C,VO'
+            
         ]);
 
-        $result = EtOrders::where('boxoffice_id',$request->boxoffice_id)->get();
+        if(!empty($request->global_search) &&  empty($request->order_fromdate) && empty($request->order_todate) ){
 
-        if($result)
-        {
-            return $this->sendResponse($result);
+            $result = EtOrders::with(['customer'])->
+            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
+            where([
+                'et_orders.boxoffice_id'=> $request->boxoffice_id,
+                'et_orders.event_id' => $request->event_id,
+                'et_orders.order_status' => $request->order_status])->
+            where(['et_customers.firstname' => $request->global_search,
+                'et_customers.lastname' => $request->global_search])->
+            Orwhere('et_customers.firstname', $request->global_search)->
+            Orwhere('et_customers.lastname', $request->global_search)->
+            Orwhere('et_customers.email', $request->global_search)->
+            Orwhere('et_orders.ticket_id', $request->global_search)->get();
+
+        }else if(!empty($request->order_fromdate) && !empty($request->order_todate) && empty($request->global_search)){
+
+            $result = EtOrders::with(['customer'])->
+            where([
+                'boxoffice_id'=> $request->boxoffice_id,
+                'event_id' => $request->event_id,
+                'order_status' => $request->order_status])->
+            whereBetween('order_date',[$request->order_fromdate,$request->order_todate])->get();
+
+        }else if(!empty($request->order_fromdate) && empty($request->order_todate) && empty($request->global_search)){
+
+            $result = EtOrders::with(['customer'])->
+            where('boxoffice_id', $request->boxoffice_id)->
+            where('order_date','>', $request->order_fromdate)->get();
+
+        }else if(!empty($request->order_todate) && empty($request->order_fromdate) && empty($request->global_search)){
+
+            $result = EtOrders::with(['customer'])->
+            where('boxoffice_id', $request->boxoffice_id)->
+            where('order_date','<', $request->order_todate)->get();   
+        }else if(!empty($request->order_fromdate) && empty($request->order_todate) && !empty($request->global_search)){
+
+            $result = EtOrders::with(['customer'])->
+            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
+            where('et_orders.order_date','>', $request->order_fromdate)->
+            where([
+                'et_orders.boxoffice_id'=> $request->boxoffice_id,
+                'et_orders.event_id' => $request->event_id,
+                'et_orders.order_status' => $request->order_status])->
+            where(['et_customers.firstname' => $request->global_search,
+                'et_customers.lastname' => $request->global_search])->
+            Orwhere('et_customers.firstname', $request->global_search)->
+            Orwhere('et_customers.lastname', $request->global_search)->
+            Orwhere('et_customers.email', $request->global_search)->
+            Orwhere('et_orders.ticket_id', $request->global_search)->
+            get();
+
+        }else if(!empty($request->order_todate) && empty($request->order_fromdate) && !empty($request->global_search)){
+
+            $result = EtOrders::with(['customer'])->
+            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
+            where('et_orders.order_date','<', $request->order_todate)->
+            where([
+                'et_orders.boxoffice_id'=> $request->boxoffice_id,
+                'et_orders.event_id' => $request->event_id,
+                'et_orders.order_status' => $request->order_status])->
+            where(['et_customers.firstname' => $request->global_search,
+                'et_customers.lastname' => $request->global_search])->
+            Orwhere('et_customers.firstname', $request->global_search)->
+            Orwhere('et_customers.lastname', $request->global_search)->
+            Orwhere('et_customers.email', $request->global_search)->
+            Orwhere('et_orders.ticket_id', $request->global_search)->get();   
+                 
+        }else if(!empty($request->global_search) && !empty($request->order_fromdate) && !empty($request->order_todate) ){
+
+            $result = EtOrders::with(['customer'])->
+            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
+            where([
+                'et_orders.boxoffice_id'=> $request->boxoffice_id,
+                'et_orders.event_id' => $request->event_id,
+                'et_orders.order_status' => $request->order_status])->
+            where('et_customers.name' , $request->global_search)->
+            Orwhere('et_customers.email', $request->global_search)->
+            Orwhere('et_orders.ticket_id', $request->global_search)->
+            whereBetween('et_orders.order_date',[$request->order_fromdate,$request->order_todate])->
+            get();
+
+        }else{
+            $result = EtOrders::with(['customer'])->where([
+                'boxoffice_id'=> $request->boxoffice_id,
+                'event_id' => $request->event_id,
+                'order_status' => $request->order_status])->get();
+            // $result = EtOrders::with(['customer'])->where(['boxoffice_id'=> $request->boxoffice_id])->get();
         }
-        else
-        {
+        
+        if(!empty($result)){
+            return $this->sendResponse($result);
+        }else if(empty($result)){
             return $this->sendResponse("Sorry! Order not found.",200,false);
+        }else{
+            return $this->sendResponse("Sorry! Something wrong.",200,false);
         }
     }
 }

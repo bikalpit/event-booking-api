@@ -6,7 +6,7 @@ class EtCustomers extends Model
     protected $table = 'et_customers';
     protected $fillable = [
         'unique_code',
-				'boxoffice_id',
+		'boxoffice_id',
         'email',
         'phone',
         'firstname',
@@ -14,5 +14,9 @@ class EtCustomers extends Model
         'email_verify',
         'image'
     ];    
+
+    public function orders(){
+        return $this->hasMany('App\EtOrders', 'unique_code','customer_id');
+    }
     
 }
