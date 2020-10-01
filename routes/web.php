@@ -151,6 +151,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 	$router->post('all-requested-inviter-api',  ['uses' => 'InviterController@get_inviters_data']);
 	$router->post('delete-request-inviter-api',  ['uses' => 'InviterController@InviterDelete']);
 	
+	//get issue ticket API
+	$router->post('get-all-issue-ticket',  ['uses' => 'IssueTicketController@getAllIssueTicket']);
+	//get issue ticket API
+	
 
 
 });
