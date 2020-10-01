@@ -24,6 +24,10 @@ class EtOrders extends Model
 
     public function customer(){  
         return $this->belongsTo('App\EtCustomers','customer_id','unique_code');    
+    } 
+
+    public function ticket(){  
+        return $this->belongsTo('App\EtTickets','ticket_id','unique_code');    
     }    
     
 }

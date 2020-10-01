@@ -169,94 +169,370 @@ class OrderController extends Controller
             
         ]);
 
-        if(!empty($request->global_search) &&  empty($request->order_fromdate) && empty($request->order_todate) ){
-
-            $result = EtOrders::with(['customer'])->
-            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
-            where([
-                'et_orders.boxoffice_id'=> $request->boxoffice_id,
-                'et_orders.event_id' => $request->event_id,
-                'et_orders.order_status' => $request->order_status])->
-            where(['et_customers.firstname' => $request->global_search,
-                'et_customers.lastname' => $request->global_search])->
-            Orwhere('et_customers.firstname', $request->global_search)->
-            Orwhere('et_customers.lastname', $request->global_search)->
-            Orwhere('et_customers.email', $request->global_search)->
-            Orwhere('et_orders.ticket_id', $request->global_search)->get();
-
-        }else if(!empty($request->order_fromdate) && !empty($request->order_todate) && empty($request->global_search)){
-
-            $result = EtOrders::with(['customer'])->
-            where([
-                'boxoffice_id'=> $request->boxoffice_id,
-                'event_id' => $request->event_id,
-                'order_status' => $request->order_status])->
-            whereBetween('order_date',[$request->order_fromdate,$request->order_todate])->get();
-
+        if(!empty($request->order_fromdate) && !empty($request->order_todate) && empty($request->global_search)){
+           
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where([
+                    'boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'order_status' => $request->order_status])->
+                whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where([
+                    'boxoffice_id'=> $request->boxoffice_id,
+                    'order_status' => $request->order_status])->
+                whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+                $result = EtOrders::with(['customer'])->
+                where([
+                    'boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id])->
+                whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+            }else{
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id])->
+                whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+            }
         }else if(!empty($request->order_fromdate) && empty($request->order_todate) && empty($request->global_search)){
-
-            $result = EtOrders::with(['customer'])->
-            where('boxoffice_id', $request->boxoffice_id)->
-            where('order_date','>', $request->order_fromdate)->get();
-
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                'event_id' => $request->event_id,    
+                'order_status' => $request->order_status])->
+                where('order_date','>', $request->order_fromdate)->get();
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                'order_status' => $request->order_status])->
+                where('order_date','>', $request->order_fromdate)->get();
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                'event_id' => $request->event_id])->
+                where('order_date','>', $request->order_fromdate)->get();
+            }else{
+                $result = EtOrders::with(['customer'])->
+                where('boxoffice_id', $request->boxoffice_id)->
+                where('order_date','>', $request->order_fromdate)->get();
+            }
         }else if(!empty($request->order_todate) && empty($request->order_fromdate) && empty($request->global_search)){
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id,    
+                    'order_status' => $request->order_status])->
+                where('order_date','<', $request->order_todate)->get(); 
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'order_status' => $request->order_status])->
+                where('order_date','<', $request->order_todate)->get(); 
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){ 
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id])->
+                where('order_date','<', $request->order_todate)->get();  
+            }else{
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id])->
+                where('order_date','<', $request->order_todate)->get(); 
+            }  
 
-            $result = EtOrders::with(['customer'])->
-            where('boxoffice_id', $request->boxoffice_id)->
-            where('order_date','<', $request->order_todate)->get();   
         }else if(!empty($request->order_fromdate) && empty($request->order_todate) && !empty($request->global_search)){
 
-            $result = EtOrders::with(['customer'])->
-            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
-            where('et_orders.order_date','>', $request->order_fromdate)->
-            where([
-                'et_orders.boxoffice_id'=> $request->boxoffice_id,
-                'et_orders.event_id' => $request->event_id,
-                'et_orders.order_status' => $request->order_status])->
-            where(['et_customers.firstname' => $request->global_search,
-                'et_customers.lastname' => $request->global_search])->
-            Orwhere('et_customers.firstname', $request->global_search)->
-            Orwhere('et_customers.lastname', $request->global_search)->
-            Orwhere('et_customers.email', $request->global_search)->
-            Orwhere('et_orders.ticket_id', $request->global_search)->
-            get();
+            $customer_ids = '';
+            $keyword = $request->global_search;
+            $customer_ids = EtCustomers::where('firstname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('phone', 'LIKE', '%'.$keyword.'%')
+                ->orWhere(DB::raw('concat(firstname," ",lastname)'),'LIKE' , '%'.$keyword.'%')
+                ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                ->pluck('unique_code')->toArray();
 
-        }else if(!empty($request->order_todate) && empty($request->order_fromdate) && !empty($request->global_search)){
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'order_status' => $request->order_status])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','>', $request->order_fromdate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'order_status' => $request->order_status,
+                    'ticket_id' => $keyword])->
+                    where('order_date','>', $request->order_fromdate)->get(); 
+                }
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                    'order_status' => $request->order_status])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','>', $request->order_fromdate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'order_status' => $request->order_status,
+                    'ticket_id' => $keyword])->
+                    where('order_date','>', $request->order_fromdate)->get(); 
+                }
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id' => $request->event_id])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','>', $request->order_fromdate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'ticket_id' => $keyword])->
+                    where('order_date','>', $request->order_fromdate)->get(); 
+                }
+            }else{
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where('boxoffice_id',$request->boxoffice_id)
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','>', $request->order_fromdate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'ticket_id' => $keyword])->
+                    where('order_date','>', $request->order_fromdate)->get(); 
+                }
+            }
+        }else if(empty($request->order_fromdate) && !empty($request->order_todate) && !empty($request->global_search)){
 
-            $result = EtOrders::with(['customer'])->
-            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
-            where('et_orders.order_date','<', $request->order_todate)->
-            where([
-                'et_orders.boxoffice_id'=> $request->boxoffice_id,
-                'et_orders.event_id' => $request->event_id,
-                'et_orders.order_status' => $request->order_status])->
-            where(['et_customers.firstname' => $request->global_search,
-                'et_customers.lastname' => $request->global_search])->
-            Orwhere('et_customers.firstname', $request->global_search)->
-            Orwhere('et_customers.lastname', $request->global_search)->
-            Orwhere('et_customers.email', $request->global_search)->
-            Orwhere('et_orders.ticket_id', $request->global_search)->get();   
-                 
-        }else if(!empty($request->global_search) && !empty($request->order_fromdate) && !empty($request->order_todate) ){
+            $customer_ids = '';
+            $keyword = $request->global_search;
+            $customer_ids = EtCustomers::where('firstname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('phone', 'LIKE', '%'.$keyword.'%')
+                ->orWhere(DB::raw('concat(firstname," ",lastname)'),'LIKE' , '%'.$keyword.'%')
+                ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                ->pluck('unique_code')->toArray();
 
-            $result = EtOrders::with(['customer'])->
-            join('et_customers', 'et_orders.customer_id', '=', 'et_customers.unique_code')->
-            where([
-                'et_orders.boxoffice_id'=> $request->boxoffice_id,
-                'et_orders.event_id' => $request->event_id,
-                'et_orders.order_status' => $request->order_status])->
-            where('et_customers.name' , $request->global_search)->
-            Orwhere('et_customers.email', $request->global_search)->
-            Orwhere('et_orders.ticket_id', $request->global_search)->
-            whereBetween('et_orders.order_date',[$request->order_fromdate,$request->order_todate])->
-            get();
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id'=> $request->event_id,
+                    'order_status'=> $request->order_status])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','<', $request->order_todate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id'=> $request->event_id,
+                    'order_status'=> $request->order_status,
+                    'ticket_id' => $keyword])->
+                    where('order_date','<', $request->order_todate)->get(); 
+                } 
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id'=> $request->boxoffice_id,
+                    'order_status'=> $request->order_status])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','<', $request->order_todate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'order_status'=> $request->order_status,
+                    'ticket_id' => $keyword])->
+                    where('order_date','<', $request->order_todate)->get(); 
+                }  
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){ 
 
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id'=> $request->event_id])
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','<', $request->order_todate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id'=> $request->event_id,
+                    'ticket_id' => $keyword])->
+                    where('order_date','<', $request->order_todate)->get(); 
+                } 
+            }else{
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where('boxoffice_id',$request->boxoffice_id)
+                    ->whereIn('customer_id',$customer_ids)
+                    ->where('order_date','<', $request->order_todate)->get();  
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                    'ticket_id' => $keyword])->
+                    where('order_date','<', $request->order_todate)->get(); 
+                }
+            }  
+
+        }else if(!empty($request->order_todate) && !empty($request->order_fromdate) && !empty($request->global_search)){
+
+            $customer_ids = '';
+            $keyword = $request->global_search;
+            $customer_ids = EtCustomers::where('firstname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('phone', 'LIKE', '%'.$keyword.'%')
+                ->orWhere(DB::raw('concat(firstname," ",lastname)'),'LIKE' , '%'.$keyword.'%')
+                ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                ->pluck('unique_code')->toArray();
+
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'order_status' => $request->order_status])->
+                    whereIn('customer_id',$customer_ids)->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=>$request->boxoffice_id,
+                        'event_id' =>$request->event_id,
+                        'order_status' =>$request->order_status,
+                        'ticket_id' => $keyword])->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id' => $request->boxoffice_id,
+                    'order_status' => $request->order_status])->
+                    whereIn('customer_id',$customer_ids)->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=>$request->boxoffice_id,
+                        'order_status'=> $request->order_status,
+                        'ticket_id' => $keyword])->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id' => $request->boxoffice_id,
+                    'event_id' => $request->event_id])->
+                    whereIn('customer_id',$customer_ids)->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=>$request->boxoffice_id,
+                        'event_id' => $request->event_id,
+                        'ticket_id' => $keyword])->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }
+            }else{
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id' => $request->boxoffice_id])->
+                    whereIn('customer_id',$customer_ids)->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }else{
+                    $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=>$request->boxoffice_id,
+                        'ticket_id' => $keyword])->
+                    whereBetween('order_date',array($request->order_fromdate,$request->order_todate))->get();
+                }
+            }
+        }else if(empty($request->order_todate) && empty($request->order_fromdate) && !empty($request->global_search)){
+            $customer_ids = '';
+            $keyword = $request->global_search;
+            $customer_ids = EtCustomers::where('firstname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('phone', 'LIKE', '%'.$keyword.'%')
+                ->orWhere(DB::raw('concat(firstname," ",lastname)'),'LIKE' , '%'.$keyword.'%')
+                ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                ->pluck('unique_code')->toArray();
+
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                        'event_id' => $request->event_id,
+                        'order_status' => $request->order_status
+                    ])->
+                    whereIn('customer_id',$customer_ids)->get();
+                }else{
+                   $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                        'event_id'=> $request->event_id,
+                        'order_status'=> $request->order_status,
+                        'ticket_id' => $keyword
+                    ])->get();  
+                }
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                        'order_status' => $request->order_status
+                    ])->
+                    whereIn('customer_id',$customer_ids)->get();
+                }else{
+                   $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                        'order_status'=> $request->order_status,
+                        'ticket_id' => $keyword
+                    ])->get();  
+                }
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where(['boxoffice_id' => $request->boxoffice_id,
+                        'event_id' => $request->event_id
+                    ])->
+                    whereIn('customer_id',$customer_ids)->get(); 
+                }else{
+                   $result = EtOrders::with(['customer'])->
+                    where(['boxoffice_id'=> $request->boxoffice_id,
+                        'event_id' => $request->event_id,
+                        'ticket_id' => $keyword
+                    ])->get();  
+                }
+            }else{
+                if(!empty($customer_ids)){
+                    $result = EtOrders::with(['customer'])
+                    ->where('boxoffice_id',$request->boxoffice_id)
+                    ->whereIn('customer_id',$customer_ids)->get(); 
+                }else{
+                   $result = EtOrders::with(['customer'])
+                    ->where([
+                        'boxoffice_id'=> $request->boxoffice_id,
+                        'ticket_id' => $keyword
+                    ])->get(); 
+                }
+            }
         }else{
-            $result = EtOrders::with(['customer'])->where([
-                'boxoffice_id'=> $request->boxoffice_id,
-                'event_id' => $request->event_id,
-                'order_status' => $request->order_status])->get();
-            // $result = EtOrders::with(['customer'])->where(['boxoffice_id'=> $request->boxoffice_id])->get();
+            if($request->event_id != 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id,
+                    'order_status' => $request->order_status])->get();
+            }else if($request->event_id == 'all' && $request->order_status != 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'order_status' => $request->order_status])->get();
+            }else if($request->event_id != 'all' && $request->order_status == 'all'){
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id,
+                    'event_id' => $request->event_id])->get();
+            }else{
+                $result = EtOrders::with(['customer'])->
+                where(['boxoffice_id'=> $request->boxoffice_id])->get();
+            }
+            
         }
         
         if(!$result->isEmpty()){
@@ -267,4 +543,5 @@ class OrderController extends Controller
             return $this->sendResponse("Sorry! Something wrong.",200,false);
         }
     }
+       
 }

@@ -27,5 +27,9 @@ class EtTickets extends Model
         'show_qty',
         'discount'
     ];    
+	
+	public function orders(){
+        return $this->hasOne('App\EtOrders', 'unique_code','ticket_id');
+    }
     
 }
