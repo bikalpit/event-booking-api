@@ -1,0 +1,2 @@
+[21-Sep-2020 07:11:01 America/Boise] PHP Warning:  require_once(/home4/lavishaf/public_html/eventjio/api/bootstrap/../vendor/autoload.php): failed to open stream: No such file or directory in /home4/lavishaf/public_html/eventjio/api/bootstrap/app.php on line 3
+[21-Sep-2020 07:11:01 America/Boise] PHP Fatal error:  require_once(): Failed opening required '/home4/lavishaf/public_html/eventjio/api/bootstrap/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home4/lavishaf/public_html/eventjio/api/bootstrap/app.php on line 3
